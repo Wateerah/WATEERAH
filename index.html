@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>وَتيرة</title>
 
 <style>
+
 * {
   box-sizing: border-box;
   font-family: Arial, sans-serif;
@@ -18,19 +21,20 @@ body {
 }
 
 header {
-  background: linear-gradient(135deg, #5bbcf6, #8ed8ff);
+  background: linear-gradient(135deg, #55b9f3, #8ed8ff);
   color: white;
-  padding: 25px;
+  padding: 28px 20px;
   text-align: center;
 }
 
 header h1 {
   margin: 0;
-  font-size: 38px;
+  font-size: 40px;
 }
 
 header p {
   margin: 8px 0 0;
+  font-size: 16px;
 }
 
 .container {
@@ -47,19 +51,25 @@ header p {
   box-shadow: 0 5px 18px rgba(0,0,0,0.08);
 }
 
+h2 {
+  margin-top: 0;
+}
+
 label {
   display: block;
-  margin: 12px 0 7px;
+  margin: 14px 0 7px;
   font-weight: bold;
 }
 
 select,
-input {
+input[type="text"],
+input[type="number"] {
   width: 100%;
   padding: 13px;
   border: 2px solid #d7edf9;
   border-radius: 12px;
   font-size: 16px;
+  background: white;
 }
 
 button {
@@ -68,7 +78,7 @@ button {
   padding: 13px 18px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 15px;
+  margin-top: 12px;
 }
 
 .primary {
@@ -91,6 +101,14 @@ button {
   display: none;
 }
 
+.message {
+  background: #eef9ff;
+  border-radius: 12px;
+  padding: 13px;
+  margin-top: 15px;
+  text-align: center;
+}
+
 .day {
   border: 2px solid #e0f2fc;
   border-radius: 16px;
@@ -107,14 +125,15 @@ button {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px;
+  padding: 11px;
   background: #f7fcff;
   border-radius: 10px;
   margin: 8px 0;
 }
 
 .task input {
-  width: auto;
+  width: 20px;
+  height: 20px;
 }
 
 .done {
@@ -137,14 +156,6 @@ button {
   transition: 0.3s;
 }
 
-.message {
-  background: #eef9ff;
-  border-radius: 12px;
-  padding: 12px;
-  margin-top: 15px;
-  text-align: center;
-}
-
 .timer {
   text-align: center;
 }
@@ -155,95 +166,257 @@ button {
   color: #2388bd;
   margin: 10px;
 }
+
+.info-box {
+  background: #f5fbff;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 15px;
+  line-height: 1.7;
+}
+
 </style>
 </head>
+
 
 <body>
 
 <header>
-  <h1>وَتيرة 💙</h1>
-  <p>خطتك الدراسية تتنظم معك، حتى لو تأخرتِ.</p>
+
+  <h1>وَتيرة📝 </h1>
+
+  <p>
+    خطتك الدراسية تتنظم معك، حتى عند التأخر.
+  </p>
+
 </header>
+
 
 <div class="container">
 
-  <div class="card">
-    <h2>✨ أنشئي خطتك</h2>
 
-    <label>اختاري المادة</label>
+<!-- إنشاء الخطة -->
 
-    <select id="subject" onchange="checkOtherSubject()">
-      <option value="">اختاري المادة</option>
-      <option value="رياضيات">رياضيات</option>
-      <option value="كيمياء">كيمياء</option>
-      <option value="فيزياء">فيزياء</option>
-      <option value="أحياء">أحياء</option>
-      <option value="قدرات">قدرات</option>
-      <option value="تحصيلي">تحصيلي</option>
-      <option value="other">مادة أخرى</option>
-    </select>
+<div class="card">
 
-    <div id="otherSubjectBox" class="hidden">
-      <label>اكتبي اسم المادة</label>
-      <input id="otherSubject" type="text" placeholder="مثال: لغتي">
-    </div>
+  <h2>✨ أنشئ خطتك</h2>
 
-    <label>كم يوم تبغين تدرسين؟</label>
-    <input id="days" type="number" min="1" max="30" placeholder="مثال: 7">
+  <label>اختر المادة</label>
 
-    <button class="primary" onclick="createPlan()">
-      ✨ أنشئ لي خطة
-    </button>
+  <select id="subject" onchange="checkOtherSubject()">
 
-    <div id="message"></div>
+    <option value="">
+      اختر المادة
+    </option>
+
+    <option value="رياضيات">
+      رياضيات
+    </option>
+
+    <option value="كيمياء">
+      كيمياء
+    </option>
+
+    <option value="فيزياء">
+      فيزياء
+    </option>
+
+    <option value="أحياء">
+      أحياء
+    </option>
+
+    <option value="قدرات">
+      قدرات
+    </option>
+
+    <option value="تحصيلي">
+      تحصيلي
+    </option>
+
+    <option value="other">
+      مادة أخرى
+    </option>
+
+  </select>
+
+
+  <!-- مادة أخرى -->
+
+  <div id="otherSubjectBox" class="hidden">
+
+    <label>
+      اكتب اسم المادة
+    </label>
+
+    <input
+      type="text"
+      id="otherSubject"
+      placeholder="مثال: لغتي"
+    >
+
   </div>
 
 
-  <div class="card" id="planCard">
-    <h2>📚 خطتي الدراسية</h2>
+  <label>
+    عدد أيام الخطة
+  </label>
 
-    <div>
-      <strong>نسبة الإنجاز</strong>
-      <div class="progress-container">
-        <div class="progress" id="progress"></div>
-      </div>
-      <p id="progressText">0%</p>
-    </div>
-
-    <div id="plan"></div>
-
-    <button class="secondary" onclick="lateDay()">
-      🔄 تأخرت اليوم
-    </button>
-
-    <button class="danger" onclick="clearPlan()">
-      🗑️ حذف الخطة
-    </button>
-  </div>
+  <input
+    type="number"
+    id="days"
+    min="1"
+    max="30"
+    placeholder="مثال: 7"
+  >
 
 
-  <div class="card timer">
-    <h2>⏱️ مؤقت المذاكرة</h2>
+  <button
+    class="primary"
+    onclick="createPlan()"
+  >
+    ✨ أنشئ الخطة
+  </button>
 
-    <div class="timer-number" id="timer">25:00</div>
 
-    <button class="primary" onclick="startTimer()">
-      ▶️ ابدأ
-    </button>
-
-    <button class="secondary" onclick="pauseTimer()">
-      ⏸️ إيقاف
-    </button>
-
-    <button class="danger" onclick="resetTimer()">
-      🔄 إعادة
-    </button>
-  </div>
+  <div id="message"></div>
 
 </div>
 
 
+
+<!-- الخطة -->
+
+<div class="card">
+
+  <h2>
+    📚 خطتي الدراسية
+  </h2>
+
+
+  <div id="plan"></div>
+
+
+  <!-- اختيار اليوم الحالي -->
+
+  <div id="currentDayBox" class="hidden">
+
+    <label>
+      اليوم الحالي
+    </label>
+
+    <select
+      id="currentDay"
+      onchange="changeCurrentDay()"
+    ></select>
+
+
+    <div class="info-box">
+
+      إذا تأخرت في مهام هذا اليوم،
+      سيتم نقل المهام غير المكتملة إلى الأيام التالية
+      مع الحفاظ على بقية الخطة.
+
+    </div>
+
+
+    <button
+      class="secondary"
+      onclick="lateDay()"
+    >
+      🔄 تأخرت اليوم
+
+    </button>
+
+  </div>
+
+
+  <button
+    class="danger"
+    onclick="clearPlan()"
+  >
+    🗑️ حذف الخطة
+  </button>
+
+
+  <br><br>
+
+
+  <strong>
+    نسبة الإنجاز
+  </strong>
+
+
+  <div class="progress-container">
+
+    <div
+      class="progress"
+      id="progress"
+    ></div>
+
+  </div>
+
+
+  <p id="progressText">
+    0%
+  </p>
+
+</div>
+
+
+
+<!-- المؤقت -->
+
+<div class="card timer">
+
+  <h2>
+    ⏱️ مؤقت المذاكرة
+  </h2>
+
+
+  <div
+    class="timer-number"
+    id="timer"
+  >
+    25:00
+  </div>
+
+
+  <button
+    class="primary"
+    onclick="startTimer()"
+  >
+    ▶️ ابدأ
+  </button>
+
+
+  <button
+    class="secondary"
+    onclick="pauseTimer()"
+  >
+    ⏸️ إيقاف
+  </button>
+
+
+  <button
+    class="danger"
+    onclick="resetTimer()"
+  >
+    🔄 إعادة
+  </button>
+
+</div>
+
+
+</div>
+
+
+
 <script>
+
+
+/* =========================
+   المهام الأساسية
+========================= */
 
 const taskTemplates = {
 
@@ -309,321 +482,860 @@ const taskTemplates = {
     "مراجعة الأخطاء",
     "مراجعة نهائية"
   ]
+
 };
 
 
-let plan = JSON.parse(localStorage.getItem("wateeraPlan")) || null;
 
+/* =========================
+   تحميل الخطة المحفوظة
+========================= */
+
+let plan =
+  JSON.parse(
+    localStorage.getItem("wateeraPlan")
+  ) || null;
+
+
+let currentDay =
+  Number(
+    localStorage.getItem("wateeraCurrentDay")
+  ) || 1;
+
+
+
+/* =========================
+   إظهار مادة أخرى
+========================= */
 
 function checkOtherSubject() {
 
-  const subject = document.getElementById("subject").value;
-  const box = document.getElementById("otherSubjectBox");
+  const subject =
+    document.getElementById("subject").value;
+
+  const box =
+    document.getElementById("otherSubjectBox");
+
 
   if (subject === "other") {
+
     box.classList.remove("hidden");
+
   } else {
+
     box.classList.add("hidden");
+
   }
+
 }
 
+
+
+/* =========================
+   إنشاء الخطة
+========================= */
 
 function createPlan() {
 
-  let subject = document.getElementById("subject").value;
-  const days = Number(document.getElementById("days").value);
+  let subject =
+    document.getElementById("subject").value;
+
+  const days =
+    Number(
+      document.getElementById("days").value
+    );
+
 
   if (!subject) {
-    showMessage("اختاري المادة أولًا 💙");
+
+    showMessage(
+      "اختر المادة أولًا 💙"
+    );
+
     return;
   }
+
+
+  /* مادة أخرى */
 
   if (subject === "other") {
 
-    subject = document.getElementById("otherSubject").value.trim();
+    subject =
+      document
+      .getElementById("otherSubject")
+      .value
+      .trim();
+
 
     if (!subject) {
-      showMessage("اكتبي اسم المادة 💙");
+
+      showMessage(
+        "اكتب اسم المادة 💙"
+      );
+
       return;
     }
+
   }
 
+
   if (!days || days < 1) {
-    showMessage("اكتبي عدد الأيام 💙");
+
+    showMessage(
+      "اكتب عدد أيام الخطة 💙"
+    );
+
     return;
   }
 
-  const tasks = taskTemplates[subject] || taskTemplates["default"];
+
+
+  const tasks =
+    taskTemplates[subject]
+    || taskTemplates["default"];
+
 
   plan = {
+
     subject: subject,
+
     days: []
+
   };
 
-  for (let i = 0; i < days; i++) {
 
-    const task = tasks[i % tasks.length];
+
+  /*
+    توزيع المهام على الأيام
+  */
+
+  for (
+    let i = 0;
+    i < days;
+    i++
+  ) {
 
     plan.days.push({
+
       day: i + 1,
+
       tasks: [
+
         {
-          text: task,
+
+          text:
+            tasks[
+              i % tasks.length
+            ],
+
           done: false
+
         }
+
       ]
+
     });
+
   }
 
+
+
+  currentDay = 1;
+
+
   savePlan();
+
+  saveCurrentDay();
+
   renderPlan();
 
+
   showMessage(
-    `تم إنشاء خطة مادة <strong>${subject}</strong> لمدة <strong>${days}</strong> أيام ✨`
+
+    `تم إنشاء خطة مادة <strong>${subject}</strong>
+     لمدة <strong>${days}</strong> أيام ✨`
+
   );
+
 }
 
+
+
+/* =========================
+   عرض الخطة
+========================= */
 
 function renderPlan() {
 
-  const planDiv = document.getElementById("plan");
+  const planDiv =
+    document.getElementById("plan");
+
+
+  const currentDayBox =
+    document.getElementById("currentDayBox");
+
 
   if (!plan) {
+
     planDiv.innerHTML = `
+
       <div class="message">
-        ما عندك خطة حاليًا. أنشئي خطتك من الأعلى ✨
+
+        لا توجد خطة حاليًا.
+        أنشئ خطة من الأعلى ✨
+
       </div>
+
     `;
+
+
+    currentDayBox.classList.add("hidden");
 
     updateProgress();
+
     return;
   }
 
-  let html = `<h3>المادة: ${plan.subject}</h3>`;
-
-  plan.days.forEach((day, dayIndex) => {
-
-    html += `
-      <div class="day">
-        <h3>اليوم ${day.day}</h3>
-    `;
-
-    day.tasks.forEach((task, taskIndex) => {
-
-      html += `
-        <div class="task">
-          <input
-            type="checkbox"
-            ${task.done ? "checked" : ""}
-            onchange="toggleTask(${dayIndex}, ${taskIndex})"
-          >
-
-          <span class="${task.done ? "done" : ""}">
-            ${task.text}
-          </span>
-        </div>
-      `;
-    });
-
-    html += `</div>`;
-  });
-
-  planDiv.innerHTML = html;
-
-  updateProgress();
-}
 
 
-function toggleTask(dayIndex, taskIndex) {
-
-  plan.days[dayIndex].tasks[taskIndex].done =
-    !plan.days[dayIndex].tasks[taskIndex].done;
-
-  savePlan();
-  renderPlan();
-}
+  currentDayBox.classList.remove("hidden");
 
 
-function updateProgress() {
 
-  if (!plan) {
-    document.getElementById("progress").style.width = "0%";
-    document.getElementById("progressText").innerText = "0%";
-    return;
-  }
+  /*
+    إنشاء قائمة الأيام
+  */
 
-  let total = 0;
-  let completed = 0;
+  const currentDaySelect =
+    document.getElementById("currentDay");
+
+
+  currentDaySelect.innerHTML = "";
+
 
   plan.days.forEach(day => {
 
-    day.tasks.forEach(task => {
+    const option =
+      document.createElement("option");
 
-      total++;
 
-      if (task.done) {
-        completed++;
-      }
-    });
+    option.value = day.day;
+
+    option.textContent =
+      `اليوم ${day.day}`;
+
+
+    if (day.day === currentDay) {
+
+      option.selected = true;
+
+    }
+
+
+    currentDaySelect.appendChild(option);
+
   });
 
-  const percent =
-    total === 0 ? 0 : Math.round((completed / total) * 100);
 
-  document.getElementById("progress").style.width =
-    percent + "%";
 
-  document.getElementById("progressText").innerText =
-    percent + "%";
+  let html = `
+
+    <h3>
+      المادة: ${plan.subject}
+    </h3>
+
+  `;
+
+
+
+  plan.days.forEach(
+    (day, dayIndex) => {
+
+      html += `
+
+        <div class="day">
+
+          <h3>
+            اليوم ${day.day}
+          </h3>
+
+      `;
+
+
+
+      if (day.tasks.length === 0) {
+
+        html += `
+
+          <p>
+            لا توجد مهام جديدة لهذا اليوم.
+          </p>
+
+        `;
+
+      }
+
+
+
+      day.tasks.forEach(
+        (task, taskIndex) => {
+
+          html += `
+
+            <div class="task">
+
+              <input
+                type="checkbox"
+
+                ${
+                  task.done
+                  ? "checked"
+                  : ""
+                }
+
+                onchange="
+                  toggleTask(
+                    ${dayIndex},
+                    ${taskIndex}
+                  )
+                "
+              >
+
+              <span
+                class="${
+                  task.done
+                  ? "done"
+                  : ""
+                }"
+              >
+
+                ${task.text}
+
+              </span>
+
+            </div>
+
+          `;
+
+        }
+
+      );
+
+
+      html += `</div>`;
+
+    }
+
+  );
+
+
+
+  planDiv.innerHTML = html;
+
+
+  updateProgress();
+
 }
 
+
+
+/* =========================
+   تغيير اليوم الحالي
+========================= */
+
+function changeCurrentDay() {
+
+  currentDay =
+    Number(
+      document.getElementById("currentDay").value
+    );
+
+
+  saveCurrentDay();
+
+}
+
+
+
+/* =========================
+   تحديد المهمة كمكتملة
+========================= */
+
+function toggleTask(
+  dayIndex,
+  taskIndex
+) {
+
+  plan
+    .days[dayIndex]
+    .tasks[taskIndex]
+    .done =
+
+    !plan
+      .days[dayIndex]
+      .tasks[taskIndex]
+      .done;
+
+
+  savePlan();
+
+  renderPlan();
+
+}
+
+
+
+/* =========================
+   إعادة جدولة اليوم المتأخر
+========================= */
 
 function lateDay() {
 
   if (!plan) {
-    showMessage("أنشئي خطة أولًا 💙");
+
+    showMessage(
+      "أنشئ خطة أولًا 💙"
+    );
+
     return;
   }
 
-  let unfinished = [];
 
-  plan.days.forEach(day => {
 
-    day.tasks.forEach(task => {
+  /*
+    الحصول على اليوم المحدد
+  */
 
-      if (!task.done) {
-        unfinished.push(task);
-      }
-    });
-  });
+  const dayIndex =
+    currentDay - 1;
+
+
+  const today =
+    plan.days[dayIndex];
+
+
+
+  if (!today) {
+
+    showMessage(
+      "اختر يومًا صحيحًا 💙"
+    );
+
+    return;
+  }
+
+
+
+  /*
+    أخذ المهام غير المكتملة
+    من هذا اليوم فقط
+  */
+
+  const unfinished =
+    today.tasks.filter(
+      task => !task.done
+    );
+
+
 
   if (unfinished.length === 0) {
-    showMessage("ما عندك مهام متأخرة 🎉");
+
+    showMessage(
+      "جميع مهام هذا اليوم مكتملة 🎉"
+    );
+
     return;
   }
 
-  const daysCount = plan.days.length;
 
-  plan.days.forEach(day => {
-    day.tasks = [];
-  });
 
-  unfinished.forEach((task, index) => {
+  /*
+    نحافظ على المهام المكتملة
+  */
 
-    const dayIndex = index % daysCount;
+  today.tasks =
+    today.tasks.filter(
+      task => task.done
+    );
 
-    plan.days[dayIndex].tasks.push({
-      text: task.text,
+
+
+  /*
+    نوزع المهام المتأخرة
+    على الأيام التالية فقط
+  */
+
+  let taskNumber = 0;
+
+
+
+  for (
+    let i = dayIndex + 1;
+
+    i < plan.days.length &&
+    taskNumber < unfinished.length;
+
+    i++
+  ) {
+
+    /*
+      نضيف المهمة المتأخرة
+      إلى بداية مهام اليوم التالي
+    */
+
+    plan.days[i].tasks.unshift({
+
+      text:
+        unfinished[taskNumber].text,
+
       done: false
+
     });
-  });
+
+
+    taskNumber++;
+
+  }
+
+
+
+  /*
+    إذا لم تعد هناك أيام كافية،
+    تضاف المهام إلى آخر يوم
+  */
+
+  while (
+    taskNumber < unfinished.length
+  ) {
+
+    plan.days[
+      plan.days.length - 1
+    ].tasks.push({
+
+      text:
+        unfinished[taskNumber].text,
+
+      done: false
+
+    });
+
+
+    taskNumber++;
+
+  }
+
+
 
   savePlan();
+
   renderPlan();
 
+
+
   showMessage(
-    "تمت إعادة توزيع المهام غير المكتملة 🔄✨"
+
+    `تمت إعادة جدولة مهام اليوم ${currentDay}
+     فقط 🔄✨`
+
   );
+
 }
 
+
+
+/* =========================
+   حفظ الخطة
+========================= */
 
 function savePlan() {
 
   localStorage.setItem(
+
     "wateeraPlan",
+
     JSON.stringify(plan)
+
   );
+
 }
 
+
+
+/* =========================
+   حفظ اليوم الحالي
+========================= */
+
+function saveCurrentDay() {
+
+  localStorage.setItem(
+
+    "wateeraCurrentDay",
+
+    currentDay
+
+  );
+
+}
+
+
+
+/* =========================
+   حذف الخطة
+========================= */
 
 function clearPlan() {
 
-  if (confirm("متأكدة تبغين تحذفين الخطة؟")) {
+  const confirmed =
+    confirm(
+      "هل تريد حذف الخطة؟"
+    );
 
-    plan = null;
 
-    localStorage.removeItem("wateeraPlan");
+  if (!confirmed) return;
 
-    renderPlan();
 
-    showMessage("تم حذف الخطة 🗑️");
-  }
+  plan = null;
+
+  currentDay = 1;
+
+
+  localStorage.removeItem(
+    "wateeraPlan"
+  );
+
+
+  localStorage.removeItem(
+    "wateeraCurrentDay"
+  );
+
+
+  renderPlan();
+
+
+  showMessage(
+    "تم حذف الخطة 🗑️"
+  );
+
 }
 
+
+
+/* =========================
+   نسبة الإنجاز
+========================= */
+
+function updateProgress() {
+
+  if (!plan) {
+
+    document
+      .getElementById("progress")
+      .style.width = "0%";
+
+
+    document
+      .getElementById("progressText")
+      .innerText = "0%";
+
+
+    return;
+  }
+
+
+
+  let total = 0;
+
+  let completed = 0;
+
+
+
+  plan.days.forEach(
+    day => {
+
+      day.tasks.forEach(
+        task => {
+
+          total++;
+
+
+          if (task.done) {
+
+            completed++;
+
+          }
+
+        }
+
+      );
+
+    }
+
+  );
+
+
+
+  const percent =
+    total === 0
+    ? 0
+    : Math.round(
+        (completed / total) * 100
+      );
+
+
+
+  document
+    .getElementById("progress")
+    .style.width =
+    percent + "%";
+
+
+  document
+    .getElementById("progressText")
+    .innerText =
+    percent + "%";
+
+}
+
+
+
+/* =========================
+   الرسائل
+========================= */
 
 function showMessage(text) {
 
-  document.getElementById("message").innerHTML =
-    `<div class="message">${text}</div>`;
+  document
+    .getElementById("message")
+    .innerHTML =
+
+    `<div class="message">
+      ${text}
+    </div>`;
+
 }
 
 
-/* المؤقت */
 
-let timerSeconds = 25 * 60;
-let timerInterval = null;
+/* =========================
+   المؤقت
+========================= */
+
+let timerSeconds =
+  25 * 60;
+
+let timerInterval =
+  null;
+
 
 
 function updateTimerDisplay() {
 
   const minutes =
-    Math.floor(timerSeconds / 60);
+    Math.floor(
+      timerSeconds / 60
+    );
+
 
   const seconds =
     timerSeconds % 60;
 
-  document.getElementById("timer").innerText =
-    String(minutes).padStart(2, "0") +
-    ":" +
-    String(seconds).padStart(2, "0");
+
+  document
+    .getElementById("timer")
+    .innerText =
+
+    String(minutes)
+      .padStart(2, "0")
+
+    + ":" +
+
+    String(seconds)
+      .padStart(2, "0");
+
 }
+
 
 
 function startTimer() {
 
   if (timerInterval) return;
 
-  timerInterval = setInterval(() => {
 
-    if (timerSeconds > 0) {
+  timerInterval =
+    setInterval(
 
-      timerSeconds--;
+      () => {
 
-      updateTimerDisplay();
+        if (timerSeconds > 0) {
 
-    } else {
+          timerSeconds--;
 
-      clearInterval(timerInterval);
-      timerInterval = null;
+          updateTimerDisplay();
 
-      alert("خلص وقت المذاكرة! 🎉");
-    }
+        }
 
-  }, 1000);
+        else {
+
+          clearInterval(
+            timerInterval
+          );
+
+          timerInterval = null;
+
+
+          alert(
+            "انتهى وقت المذاكرة! 🎉"
+          );
+
+        }
+
+      },
+
+      1000
+
+    );
+
 }
+
 
 
 function pauseTimer() {
 
-  clearInterval(timerInterval);
+  clearInterval(
+    timerInterval
+  );
+
   timerInterval = null;
+
 }
+
 
 
 function resetTimer() {
 
-  clearInterval(timerInterval);
+  clearInterval(
+    timerInterval
+  );
+
   timerInterval = null;
 
-  timerSeconds = 25 * 60;
+
+  timerSeconds =
+    25 * 60;
+
 
   updateTimerDisplay();
+
 }
 
 
-/* تشغيل الخطة المحفوظة عند فتح الموقع */
+
+/* =========================
+   تشغيل الموقع
+========================= */
 
 renderPlan();
+
 updateTimerDisplay();
 
 </script>
