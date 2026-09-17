@@ -6,39 +6,35 @@
 <title>وَتيرة</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  font-family:Arial,Tahoma,sans-serif;
-}
+*{box-sizing:border-box;font-family:Arial,Tahoma,sans-serif}
 
 body{
   margin:0;
   background:#f4fbff;
-  color:#17324d;
+  color:#17324d
 }
 
 header{
-  background:linear-gradient(135deg,#bceaff,#eaf9ff);
-  padding:35px 20px;
+  background:linear-gradient(135deg,#b9e8ff,#edfaff);
   text-align:center;
+  padding:38px 20px
 }
 
 .logo{
-  font-size:48px;
-  font-weight:bold;
+  font-size:50px;
   margin:0;
+  font-weight:bold
 }
 
 .subtitle{
-  font-size:18px;
-  margin:10px 0 0;
-  color:#52758c;
+  color:#55798d;
+  font-size:18px
 }
 
 .container{
   max-width:900px;
   margin:auto;
-  padding:25px 18px;
+  padding:22px
 }
 
 .card{
@@ -46,134 +42,120 @@ header{
   border-radius:22px;
   padding:24px;
   margin-bottom:20px;
-  box-shadow:0 8px 25px rgba(40,130,170,.10);
+  box-shadow:0 7px 25px rgba(30,120,160,.1)
 }
 
-h2{
-  margin-top:0;
-}
+h2{margin-top:0}
 
-input{
+select,input{
   width:100%;
   padding:14px;
   margin:7px 0;
   border:2px solid #d9f2ff;
   border-radius:13px;
   font-size:16px;
-  outline:none;
-}
-
-input:focus{
-  border-color:#65c5eb;
+  background:white
 }
 
 button{
   border:0;
   border-radius:13px;
   padding:12px 18px;
-  margin:6px 4px 6px 0;
-  background:#5bbce8;
+  margin:6px 3px;
+  background:#59bce7;
   color:white;
   font-size:16px;
-  cursor:pointer;
+  cursor:pointer
 }
 
-button:hover{
-  background:#42abd9;
-}
+button:hover{background:#3fa9d8}
 
 .secondary{
-  background:#e8f7fd;
-  color:#24799c;
+  background:#e6f7fd;
+  color:#247a9d
 }
 
-.danger{
-  background:#f0a5a5;
+.warning{
+  background:#fff1d9;
+  color:#96661d
 }
 
 .day{
   background:#f7fcff;
-  border:1px solid #dff3fc;
-  border-radius:16px;
-  padding:16px;
-  margin-top:12px;
+  border:1px solid #def2fa;
+  border-radius:17px;
+  padding:17px;
+  margin:12px 0
 }
 
 .day-title{
+  font-size:19px;
   font-weight:bold;
-  font-size:18px;
+  margin-bottom:10px
 }
 
 .task{
+  background:white;
+  padding:13px;
+  border-radius:12px;
+  margin:8px 0;
   display:flex;
   align-items:center;
   gap:10px;
-  background:white;
-  border-radius:12px;
-  padding:11px;
-  margin-top:8px;
+  border:1px solid #e8f5fa
 }
 
-.task input{
-  width:auto;
-  margin:0;
+.task button{
+  margin-right:auto;
+  font-size:13px;
+  padding:8px 12px
 }
 
 .task.done span{
   text-decoration:line-through;
-  opacity:.55;
-}
-
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:20px;
-  background:#dff5ff;
-  color:#287c9f;
-  font-size:13px;
-  margin-top:8px;
+  opacity:.5
 }
 
 .progress{
   height:18px;
-  background:#e6f6fc;
+  background:#e5f5fb;
   border-radius:20px;
   overflow:hidden;
-  margin-top:15px;
+  margin-top:15px
 }
 
 .progress-bar{
-  height:100%;
   width:0%;
-  background:#5bbce8;
-  transition:.4s;
+  height:100%;
+  background:#59bce7;
+  transition:.4s
+}
+
+.message{
+  display:none;
+  margin-top:12px;
+  padding:13px;
+  border-radius:13px;
+  background:#e8f8ef;
+  color:#267348
 }
 
 #timer{
-  font-size:48px;
   text-align:center;
-  margin:15px 0;
+  font-size:48px;
+  margin:15px
 }
 
 .empty{
   text-align:center;
-  color:#7795a5;
-  padding:20px;
-}
-
-.success{
-  background:#e8f8ef;
-  color:#27744a;
-  padding:13px;
-  border-radius:13px;
-  margin-top:12px;
-  display:none;
+  color:#7894a3;
+  padding:20px
 }
 
 footer{
   text-align:center;
   padding:30px;
-  color:#7795a5;
+  color:#7894a3
 }
 </style>
 </head>
@@ -188,15 +170,29 @@ footer{
 <div class="container">
 
   <div class="card">
-    <h2>📚 إنشاء خطتك</h2>
+    <h2>📚 أنشئي خطتك</h2>
 
-    <input id="subject" type="text" placeholder="اسم المادة">
-    <input id="tasks" type="text" placeholder="المهام، افصلي بينها بفاصلة">
-    <input id="days" type="number" min="1" placeholder="عدد الأيام">
+    <select id="subject">
+      <option value="">اختاري المادة</option>
+      <option value="رياضيات">رياضيات</option>
+      <option value="كيمياء">كيمياء</option>
+      <option value="فيزياء">فيزياء</option>
+      <option value="أحياء">أحياء</option>
+      <option value="قدرات">قدرات</option>
+      <option value="تحصيلي">تحصيلي</option>
+    </select>
 
-    <button onclick="createPlan()">إنشاء الخطة</button>
+    <input
+      id="days"
+      type="number"
+      min="1"
+      max="30"
+      placeholder="كم يوم عندك؟"
+    >
 
-    <div id="message" class="success"></div>
+    <button onclick="createPlan()">✨ أنشئ لي خطة</button>
+
+    <div id="message" class="message"></div>
   </div>
 
 
@@ -204,12 +200,27 @@ footer{
     <h2>📅 خطتك الدراسية</h2>
 
     <div id="plan" class="empty">
-      أنشئي خطتك أولًا لتظهر هنا 💙
+      اختاري المادة وعدد الأيام، ووَتيرة ترتبها لك 💙
     </div>
 
-    <button class="secondary" onclick="reschedule()">
-      🔄 إعادة الجدولة الآلية
+    <button onclick="lateDay()" class="warning">
+      🔄 تأخرت اليوم
     </button>
+
+    <button onclick="clearPlan()" class="secondary">
+      🗑️ حذف الخطة
+    </button>
+  </div>
+
+
+  <div class="card">
+    <h2>📊 تقدّمك</h2>
+
+    <p id="progressText">لا توجد خطة حاليًا.</p>
+
+    <div class="progress">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
   </div>
 
 
@@ -220,19 +231,8 @@ footer{
 
     <div style="text-align:center">
       <button onclick="startTimer()">ابدأ</button>
-      <button class="secondary" onclick="pauseTimer()">إيقاف</button>
-      <button class="secondary" onclick="resetTimer()">إعادة</button>
-    </div>
-  </div>
-
-
-  <div class="card">
-    <h2>📊 تقدّمك</h2>
-
-    <p id="progressText">لم تبدأ الخطة بعد.</p>
-
-    <div class="progress">
-      <div id="progressBar" class="progress-bar"></div>
+      <button onclick="pauseTimer()" class="secondary">إيقاف</button>
+      <button onclick="resetTimer()" class="secondary">إعادة</button>
     </div>
   </div>
 
@@ -246,7 +246,68 @@ footer{
 
 <script>
 
-let planData = [];
+const taskTemplates = {
+
+  "رياضيات":[
+    "فهم الدرس",
+    "مراجعة القوانين",
+    "حل أمثلة الدرس",
+    "حل تمارين متنوعة",
+    "مراجعة الأخطاء",
+    "اختبار قصير"
+  ],
+
+  "كيمياء":[
+    "قراءة الدرس وفهم المفاهيم",
+    "مراجعة المصطلحات والقوانين",
+    "حل الأمثلة",
+    "حل أسئلة نهاية الدرس",
+    "مراجعة النقاط الصعبة",
+    "اختبار قصير"
+  ],
+
+  "فيزياء":[
+    "فهم المفاهيم الأساسية",
+    "مراجعة القوانين والوحدات",
+    "حل الأمثلة",
+    "حل مسائل متنوعة",
+    "مراجعة الأخطاء",
+    "اختبار قصير"
+  ],
+
+  "أحياء":[
+    "قراءة الدرس وفهمه",
+    "مراجعة المصطلحات",
+    "تلخيص الأفكار الأساسية",
+    "مراجعة الرسومات والمفاهيم",
+    "حل الأسئلة",
+    "اختبار قصير"
+  ],
+
+  "قدرات":[
+    "مراجعة المهارات الأساسية",
+    "تدريب كمي",
+    "تدريب لفظي",
+    "حل مجموعة أسئلة",
+    "مراجعة الأخطاء",
+    "تدريب زمني"
+  ],
+
+  "تحصيلي":[
+    "مراجعة المفاهيم",
+    "تدريب على الأسئلة",
+    "مراجعة القوانين",
+    "حل أسئلة متنوعة",
+    "مراجعة الأخطاء",
+    "اختبار تجريبي"
+  ]
+
+};
+
+
+let planData =
+  JSON.parse(localStorage.getItem("wateeraPlan")) || [];
+
 let timerSeconds = 25 * 60;
 let timerInterval = null;
 
@@ -256,72 +317,78 @@ let timerInterval = null;
 function createPlan(){
 
   const subject =
-    document.getElementById("subject").value.trim();
-
-  const taskText =
-    document.getElementById("tasks").value.trim();
+    document.getElementById("subject").value;
 
   const days =
     Number(document.getElementById("days").value);
 
-  const plan =
-    document.getElementById("plan");
+  if(!subject || !days){
 
-  const message =
-    document.getElementById("message");
-
-
-  if(!subject || !taskText || !days || days < 1){
-
-    alert("اكتبي المادة والمهام وعدد الأيام أولًا 💙");
+    alert("اختاري المادة وعدد الأيام أولًا 💙");
     return;
   }
 
 
-  const tasks = taskText
-    .split(",")
-    .map(x => x.trim())
-    .filter(x => x);
+  const templates =
+    taskTemplates[subject];
 
 
-  if(tasks.length === 0){
-    alert("أضيفي مهمة واحدة على الأقل.");
-    return;
-  }
+  planData=[];
 
 
-  planData = [];
-
-
-  for(let i=0;i<days;i++){
+  for(let i=1;i<=days;i++){
 
     planData.push({
-      day:i+1,
+      day:i,
       tasks:[]
     });
 
   }
 
 
-  tasks.forEach((task,index)=>{
+  /*
+    نوزع مراحل المادة على الأيام
+  */
 
-    const dayIndex =
-      Math.floor(index * days / tasks.length);
+  for(let i=0;i<days;i++){
 
-    planData[dayIndex].tasks.push({
+    const task =
+      templates[i % templates.length];
+
+    planData[i].tasks.push({
       text:task,
       done:false
     });
 
-  });
+  }
 
 
+  /*
+    إذا الأيام أكثر من عدد المراحل
+    نضيف مراجعات إضافية
+  */
+
+  for(let i=templates.length;i<days;i++){
+
+    planData[i].tasks.push({
+      text:"مراجعة وتثبيت ما سبق",
+      done:false
+    });
+
+  }
+
+
+  savePlan();
   renderPlan();
 
 
+  const message =
+    document.getElementById("message");
+
   message.style.display="block";
+
   message.innerText =
-    "تم إنشاء خطتك بنجاح ✨ وإذا تأخرتِ، وَتيرة تعيد توزيع المهام تلقائيًا.";
+    `تم إنشاء خطة ${subject} لمدة ${days} أيام ✨`;
 
 }
 
@@ -333,10 +400,13 @@ function renderPlan(){
   const plan =
     document.getElementById("plan");
 
-  if(planData.length === 0){
+
+  if(planData.length===0){
 
     plan.innerHTML =
-      '<div class="empty">أنشئي خطتك أولًا 💙</div>';
+      '<div class="empty">اختاري المادة وعدد الأيام، ووَتيرة ترتبها لك 💙</div>';
+
+    updateProgress();
 
     return;
   }
@@ -347,38 +417,23 @@ function renderPlan(){
 
   planData.forEach((day,dayIndex)=>{
 
-    html += `
+    html+=`
       <div class="day">
 
         <div class="day-title">
           اليوم ${day.day}
         </div>
-
-        <span class="badge">
-          ${day.tasks.length} مهمة
-        </span>
     `;
-
-
-    if(day.tasks.length===0){
-
-      html += `
-        <p style="color:#8aa2af">
-          لا توجد مهام لهذا اليوم.
-        </p>
-      `;
-
-    }
 
 
     day.tasks.forEach((task,taskIndex)=>{
 
-      html += `
-        <div class="task ${task.done ? "done" : ""}">
+      html+=`
+        <div class="task ${task.done ? "done":""}">
 
           <input
             type="checkbox"
-            ${task.done ? "checked" : ""}
+            ${task.done ? "checked":""}
             onchange="toggleTask(${dayIndex},${taskIndex})"
           >
 
@@ -390,9 +445,7 @@ function renderPlan(){
     });
 
 
-    html += `
-      </div>
-    `;
+    html+=`</div>`;
 
   });
 
@@ -400,23 +453,26 @@ function renderPlan(){
   plan.innerHTML=html;
 
   updateProgress();
+
 }
 
 
-/* إنجاز المهمة */
+/* تحديد المهمة كمكتملة */
 
 function toggleTask(dayIndex,taskIndex){
 
   planData[dayIndex].tasks[taskIndex].done =
     !planData[dayIndex].tasks[taskIndex].done;
 
+  savePlan();
   renderPlan();
+
 }
 
 
 /* إعادة الجدولة */
 
-function reschedule(){
+function lateDay(){
 
   if(planData.length===0){
 
@@ -426,23 +482,22 @@ function reschedule(){
 
 
   /*
-    نجمع المهام غير المنجزة
+    نأخذ المهام غير المنجزة
   */
 
   let remaining=[];
+
+  let completed=[];
 
 
   planData.forEach(day=>{
 
     day.tasks.forEach(task=>{
 
-      if(!task.done){
-
-        remaining.push({
-          text:task.text,
-          done:false
-        });
-
+      if(task.done){
+        completed.push(task);
+      }else{
+        remaining.push(task);
       }
 
     });
@@ -452,50 +507,29 @@ function reschedule(){
 
   if(remaining.length===0){
 
-    alert("ما شاء الله! أنجزتِ كل المهام 🎉");
+    alert("أنجزتِ كل المهام! 🎉");
     return;
   }
 
 
   /*
-    نحتفظ بالمهام المنجزة
-    ونوزع غير المنجزة من جديد
+    نعيد بناء الأيام
   */
 
-  const completed=[];
-
-
   planData.forEach(day=>{
-
-    day.tasks.forEach(task=>{
-
-      if(task.done){
-
-        completed.push(task);
-
-      }
-
-    });
-
-  });
-
-
-  planData.forEach(day=>{
-
     day.tasks=[];
-
   });
 
 
   /*
-    نعيد توزيع المهام المتبقية
-    بالتساوي على الأيام
+    نوزع المهام غير المنجزة
+    بالتساوي
   */
 
   remaining.forEach((task,index)=>{
 
     const dayIndex =
-      Math.floor(index * planData.length / remaining.length);
+      index % planData.length;
 
     planData[dayIndex].tasks.push(task);
 
@@ -503,17 +537,21 @@ function reschedule(){
 
 
   /*
-    نضيف المنجزة في اليوم الأول
-    حتى لا تضيع من الخطة
+    نحافظ على المهام المنجزة
   */
 
-  completed.forEach(task=>{
+  if(completed.length>0){
 
-    planData[0].tasks.unshift(task);
+    completed.forEach(task=>{
 
-  });
+      planData[0].tasks.unshift(task);
+
+    });
+
+  }
 
 
+  savePlan();
   renderPlan();
 
 
@@ -523,12 +561,49 @@ function reschedule(){
   message.style.display="block";
 
   message.innerText =
-    "🔄 تمت إعادة جدولة المهام غير المنجزة تلقائيًا.";
+    "🔄 تمّت إعادة جدولة المهام غير المنجزة تلقائيًا.";
 
 }
 
 
-/* التقدم */
+/* حفظ الخطة */
+
+function savePlan(){
+
+  localStorage.setItem(
+    "wateeraPlan",
+    JSON.stringify(planData)
+  );
+
+}
+
+
+/* حذف الخطة */
+
+function clearPlan(){
+
+  if(planData.length===0) return;
+
+
+  const confirmDelete =
+    confirm("هل تريدين حذف الخطة؟");
+
+
+  if(!confirmDelete) return;
+
+
+  planData=[];
+
+  localStorage.removeItem("wateeraPlan");
+
+  document.getElementById("message").style.display="none";
+
+  renderPlan();
+
+}
+
+
+/* حساب التقدم */
 
 function updateProgress(){
 
@@ -554,9 +629,10 @@ function updateProgress(){
   if(total===0){
 
     document.getElementById("progressText").innerText =
-      "لم تبدأ الخطة بعد.";
+      "لا توجد خطة حاليًا.";
 
-    document.getElementById("progressBar").style.width="0%";
+    document.getElementById("progressBar").style.width =
+      "0%";
 
     return;
   }
@@ -571,6 +647,7 @@ function updateProgress(){
 
   document.getElementById("progressBar").style.width =
     percentage+"%";
+
 }
 
 
@@ -646,6 +723,9 @@ function resetTimer(){
 }
 
 
+/* تحميل الخطة المحفوظة */
+
+renderPlan();
 updateTimer();
 
 </script>
