@@ -1,257 +1,650 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>وَتيرة</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وَتيرة</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Arial,Tahoma,sans-serif;
+}
 
-    body {
-      margin: 0;
-      background: #f4fbff;
-      color: #17324d;
-    }
+body{
+  margin:0;
+  background:#f4fbff;
+  color:#17324d;
+}
 
-    header {
-      background: #b9e7ff;
-      padding: 25px;
-      text-align: center;
-    }
+header{
+  background:linear-gradient(135deg,#bceaff,#eaf9ff);
+  padding:35px 20px;
+  text-align:center;
+}
 
-    header h1 {
-      margin: 0;
-      font-size: 42px;
-    }
+.logo{
+  font-size:48px;
+  font-weight:bold;
+  margin:0;
+}
 
-    header p {
-      margin: 8px 0 0;
-      font-size: 17px;
-    }
+.subtitle{
+  font-size:18px;
+  margin:10px 0 0;
+  color:#52758c;
+}
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 25px;
-    }
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:25px 18px;
+}
 
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 22px;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
+.card{
+  background:white;
+  border-radius:22px;
+  padding:24px;
+  margin-bottom:20px;
+  box-shadow:0 8px 25px rgba(40,130,170,.10);
+}
 
-    h2 {
-      margin-top: 0;
-    }
+h2{
+  margin-top:0;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 2px solid #cceeff;
-      border-radius: 12px;
-      margin: 8px 0;
-      font-size: 16px;
-    }
+input{
+  width:100%;
+  padding:14px;
+  margin:7px 0;
+  border:2px solid #d9f2ff;
+  border-radius:13px;
+  font-size:16px;
+  outline:none;
+}
 
-    button {
-      border: none;
-      background: #5bbce8;
-      color: white;
-      padding: 13px 20px;
-      border-radius: 12px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 8px;
-    }
+input:focus{
+  border-color:#65c5eb;
+}
 
-    button:hover {
-      background: #3ba8d8;
-    }
+button{
+  border:0;
+  border-radius:13px;
+  padding:12px 18px;
+  margin:6px 4px 6px 0;
+  background:#5bbce8;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
 
-    .progress {
-      height: 18px;
-      background: #e5f6ff;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 15px;
-    }
+button:hover{
+  background:#42abd9;
+}
 
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #5bbce8;
-      transition: 0.4s;
-    }
+.secondary{
+  background:#e8f7fd;
+  color:#24799c;
+}
 
-    .task {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px;
-      margin-top: 10px;
-      background: #f4fbff;
-      border-radius: 12px;
-    }
+.danger{
+  background:#f0a5a5;
+}
 
-    .task input {
-      width: auto;
-      margin: 0;
-    }
+.day{
+  background:#f7fcff;
+  border:1px solid #dff3fc;
+  border-radius:16px;
+  padding:16px;
+  margin-top:12px;
+}
 
-    .message {
-      margin-top: 15px;
-      font-weight: bold;
-    }
+.day-title{
+  font-weight:bold;
+  font-size:18px;
+}
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: #6b8799;
-    }
-  </style>
+.task{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:white;
+  border-radius:12px;
+  padding:11px;
+  margin-top:8px;
+}
+
+.task input{
+  width:auto;
+  margin:0;
+}
+
+.task.done span{
+  text-decoration:line-through;
+  opacity:.55;
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:20px;
+  background:#dff5ff;
+  color:#287c9f;
+  font-size:13px;
+  margin-top:8px;
+}
+
+.progress{
+  height:18px;
+  background:#e6f6fc;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:15px;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#5bbce8;
+  transition:.4s;
+}
+
+#timer{
+  font-size:48px;
+  text-align:center;
+  margin:15px 0;
+}
+
+.empty{
+  text-align:center;
+  color:#7795a5;
+  padding:20px;
+}
+
+.success{
+  background:#e8f8ef;
+  color:#27744a;
+  padding:13px;
+  border-radius:13px;
+  margin-top:12px;
+  display:none;
+}
+
+footer{
+  text-align:center;
+  padding:30px;
+  color:#7795a5;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>وَتيرة</h1>
-  <p>نرتّب وقتك، ونرجّعك لمسارك ✨</p>
+  <h1 class="logo">وَتيرة</h1>
+  <p class="subtitle">نرتّب وقتك، ونرجّعك لمسارك ✨</p>
 </header>
 
 <div class="container">
 
   <div class="card">
-    <h2>📚 خطتي الدراسية</h2>
+    <h2>📚 إنشاء خطتك</h2>
 
     <input id="subject" type="text" placeholder="اسم المادة">
-    <input id="days" type="number" placeholder="عدد الأيام">
+    <input id="tasks" type="text" placeholder="المهام، افصلي بينها بفاصلة">
+    <input id="days" type="number" min="1" placeholder="عدد الأيام">
 
     <button onclick="createPlan()">إنشاء الخطة</button>
 
-    <div id="plan"></div>
+    <div id="message" class="success"></div>
   </div>
+
+
+  <div class="card">
+    <h2>📅 خطتك الدراسية</h2>
+
+    <div id="plan" class="empty">
+      أنشئي خطتك أولًا لتظهر هنا 💙
+    </div>
+
+    <button class="secondary" onclick="reschedule()">
+      🔄 إعادة الجدولة الآلية
+    </button>
+  </div>
+
 
   <div class="card">
     <h2>⏰ مؤقت المذاكرة</h2>
 
-    <h1 id="timer">25:00</h1>
+    <div id="timer">25:00</div>
 
-    <button onclick="startTimer()">ابدأ</button>
-    <button onclick="resetTimer()">إعادة</button>
+    <div style="text-align:center">
+      <button onclick="startTimer()">ابدأ</button>
+      <button class="secondary" onclick="pauseTimer()">إيقاف</button>
+      <button class="secondary" onclick="resetTimer()">إعادة</button>
+    </div>
   </div>
+
 
   <div class="card">
     <h2>📊 تقدّمك</h2>
 
-    <p id="progressText">أنجزي مهامك ليظهر تقدمك هنا.</p>
+    <p id="progressText">لم تبدأ الخطة بعد.</p>
 
     <div class="progress">
-      <div class="progress-bar" id="progressBar"></div>
+      <div id="progressBar" class="progress-bar"></div>
     </div>
   </div>
 
 </div>
 
 <footer>
-  وَتيرة — لأن التأخير ما يعني النهاية 💙
+  وَتيرة 💙<br>
+  لأن التأخير ما يعني النهاية.
 </footer>
+
 
 <script>
 
+let planData = [];
 let timerSeconds = 25 * 60;
 let timerInterval = null;
 
-function createPlan() {
 
-  const subject = document.getElementById("subject").value;
-  const days = Number(document.getElementById("days").value);
-  const plan = document.getElementById("plan");
+/* إنشاء الخطة */
 
-  if (!subject || !days || days < 1) {
-    plan.innerHTML =
-      '<p class="message">اكتبي المادة وعدد الأيام أولًا 💙</p>';
+function createPlan(){
+
+  const subject =
+    document.getElementById("subject").value.trim();
+
+  const taskText =
+    document.getElementById("tasks").value.trim();
+
+  const days =
+    Number(document.getElementById("days").value);
+
+  const plan =
+    document.getElementById("plan");
+
+  const message =
+    document.getElementById("message");
+
+
+  if(!subject || !taskText || !days || days < 1){
+
+    alert("اكتبي المادة والمهام وعدد الأيام أولًا 💙");
     return;
   }
 
-  let html = "<h3>خطة " + subject + "</h3>";
 
-  for (let i = 1; i <= days; i++) {
-    html += `
-      <div class="task">
-        <input type="checkbox" onchange="updateProgress()">
-        <span>اليوم ${i} — مذاكرة جزء من ${subject}</span>
-      </div>
-    `;
+  const tasks = taskText
+    .split(",")
+    .map(x => x.trim())
+    .filter(x => x);
+
+
+  if(tasks.length === 0){
+    alert("أضيفي مهمة واحدة على الأقل.");
+    return;
   }
 
-  plan.innerHTML = html;
+
+  planData = [];
+
+
+  for(let i=0;i<days;i++){
+
+    planData.push({
+      day:i+1,
+      tasks:[]
+    });
+
+  }
+
+
+  tasks.forEach((task,index)=>{
+
+    const dayIndex =
+      Math.floor(index * days / tasks.length);
+
+    planData[dayIndex].tasks.push({
+      text:task,
+      done:false
+    });
+
+  });
+
+
+  renderPlan();
+
+
+  message.style.display="block";
+  message.innerText =
+    "تم إنشاء خطتك بنجاح ✨ وإذا تأخرتِ، وَتيرة تعيد توزيع المهام تلقائيًا.";
+
+}
+
+
+/* عرض الخطة */
+
+function renderPlan(){
+
+  const plan =
+    document.getElementById("plan");
+
+  if(planData.length === 0){
+
+    plan.innerHTML =
+      '<div class="empty">أنشئي خطتك أولًا 💙</div>';
+
+    return;
+  }
+
+
+  let html="";
+
+
+  planData.forEach((day,dayIndex)=>{
+
+    html += `
+      <div class="day">
+
+        <div class="day-title">
+          اليوم ${day.day}
+        </div>
+
+        <span class="badge">
+          ${day.tasks.length} مهمة
+        </span>
+    `;
+
+
+    if(day.tasks.length===0){
+
+      html += `
+        <p style="color:#8aa2af">
+          لا توجد مهام لهذا اليوم.
+        </p>
+      `;
+
+    }
+
+
+    day.tasks.forEach((task,taskIndex)=>{
+
+      html += `
+        <div class="task ${task.done ? "done" : ""}">
+
+          <input
+            type="checkbox"
+            ${task.done ? "checked" : ""}
+            onchange="toggleTask(${dayIndex},${taskIndex})"
+          >
+
+          <span>${task.text}</span>
+
+        </div>
+      `;
+
+    });
+
+
+    html += `
+      </div>
+    `;
+
+  });
+
+
+  plan.innerHTML=html;
 
   updateProgress();
 }
 
-function updateProgress() {
 
-  const tasks = document.querySelectorAll('.task input');
-  const completed =
-    document.querySelectorAll('.task input:checked').length;
+/* إنجاز المهمة */
 
-  if (tasks.length === 0) return;
+function toggleTask(dayIndex,taskIndex){
+
+  planData[dayIndex].tasks[taskIndex].done =
+    !planData[dayIndex].tasks[taskIndex].done;
+
+  renderPlan();
+}
+
+
+/* إعادة الجدولة */
+
+function reschedule(){
+
+  if(planData.length===0){
+
+    alert("أنشئي خطة أولًا 💙");
+    return;
+  }
+
+
+  /*
+    نجمع المهام غير المنجزة
+  */
+
+  let remaining=[];
+
+
+  planData.forEach(day=>{
+
+    day.tasks.forEach(task=>{
+
+      if(!task.done){
+
+        remaining.push({
+          text:task.text,
+          done:false
+        });
+
+      }
+
+    });
+
+  });
+
+
+  if(remaining.length===0){
+
+    alert("ما شاء الله! أنجزتِ كل المهام 🎉");
+    return;
+  }
+
+
+  /*
+    نحتفظ بالمهام المنجزة
+    ونوزع غير المنجزة من جديد
+  */
+
+  const completed=[];
+
+
+  planData.forEach(day=>{
+
+    day.tasks.forEach(task=>{
+
+      if(task.done){
+
+        completed.push(task);
+
+      }
+
+    });
+
+  });
+
+
+  planData.forEach(day=>{
+
+    day.tasks=[];
+
+  });
+
+
+  /*
+    نعيد توزيع المهام المتبقية
+    بالتساوي على الأيام
+  */
+
+  remaining.forEach((task,index)=>{
+
+    const dayIndex =
+      Math.floor(index * planData.length / remaining.length);
+
+    planData[dayIndex].tasks.push(task);
+
+  });
+
+
+  /*
+    نضيف المنجزة في اليوم الأول
+    حتى لا تضيع من الخطة
+  */
+
+  completed.forEach(task=>{
+
+    planData[0].tasks.unshift(task);
+
+  });
+
+
+  renderPlan();
+
+
+  const message =
+    document.getElementById("message");
+
+  message.style.display="block";
+
+  message.innerText =
+    "🔄 تمت إعادة جدولة المهام غير المنجزة تلقائيًا.";
+
+}
+
+
+/* التقدم */
+
+function updateProgress(){
+
+  let total=0;
+  let completed=0;
+
+
+  planData.forEach(day=>{
+
+    day.tasks.forEach(task=>{
+
+      total++;
+
+      if(task.done){
+        completed++;
+      }
+
+    });
+
+  });
+
+
+  if(total===0){
+
+    document.getElementById("progressText").innerText =
+      "لم تبدأ الخطة بعد.";
+
+    document.getElementById("progressBar").style.width="0%";
+
+    return;
+  }
+
 
   const percentage =
-    Math.round((completed / tasks.length) * 100);
+    Math.round((completed/total)*100);
 
-  document.getElementById("progressBar").style.width =
-    percentage + "%";
 
   document.getElementById("progressText").innerText =
-    "أنجزتِ " + percentage + "% من خطتك 🎉";
+    `أنجزتِ ${completed} من ${total} مهمة — ${percentage}% 🎉`;
+
+  document.getElementById("progressBar").style.width =
+    percentage+"%";
 }
 
-function updateTimer() {
 
-  let minutes = Math.floor(timerSeconds / 60);
-  let seconds = timerSeconds % 60;
+/* المؤقت */
 
-  minutes = String(minutes).padStart(2, "0");
-  seconds = String(seconds).padStart(2, "0");
+function updateTimer(){
+
+  const minutes =
+    Math.floor(timerSeconds/60);
+
+  const seconds =
+    timerSeconds%60;
+
 
   document.getElementById("timer").innerText =
-    minutes + ":" + seconds;
+    String(minutes).padStart(2,"0")
+    + ":" +
+    String(seconds).padStart(2,"0");
 
-  if (timerSeconds <= 0) {
+
+  if(timerSeconds<=0){
+
     clearInterval(timerInterval);
+
+    timerInterval=null;
+
     alert("خلص وقت المذاكرة! خذي استراحة قصيرة 💙");
+
   }
+
 }
 
-function startTimer() {
 
-  if (timerInterval) return;
+function startTimer(){
 
-  timerInterval = setInterval(() => {
+  if(timerInterval) return;
 
-    if (timerSeconds > 0) {
+
+  timerInterval=setInterval(()=>{
+
+    if(timerSeconds>0){
+
       timerSeconds--;
+
       updateTimer();
+
     }
 
-  }, 1000);
+  },1000);
+
 }
 
-function resetTimer() {
+
+function pauseTimer(){
 
   clearInterval(timerInterval);
-  timerInterval = null;
-  timerSeconds = 25 * 60;
-  updateTimer();
+
+  timerInterval=null;
+
 }
+
+
+function resetTimer(){
+
+  clearInterval(timerInterval);
+
+  timerInterval=null;
+
+  timerSeconds=25*60;
+
+  updateTimer();
+
+}
+
 
 updateTimer();
 
