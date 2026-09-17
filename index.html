@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>وَتيرة</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f4fbff;
+      color: #17324d;
+    }
+
+    header {
+      background: #b9e7ff;
+      padding: 25px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 42px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      font-size: 17px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #cceeff;
+      border-radius: 12px;
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    button {
+      border: none;
+      background: #5bbce8;
+      color: white;
+      padding: 13px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    button:hover {
+      background: #3ba8d8;
+    }
+
+    .progress {
+      height: 18px;
+      background: #e5f6ff;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #5bbce8;
+      transition: 0.4s;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      background: #f4fbff;
+      border-radius: 12px;
+    }
+
+    .task input {
+      width: auto;
+      margin: 0;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #6b8799;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>وَتيرة</h1>
+  <p>نرتّب وقتك، ونرجّعك لمسارك ✨</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>📚 خطتي الدراسية</h2>
+
+    <input id="subject" type="text" placeholder="اسم المادة">
+    <input id="days" type="number" placeholder="عدد الأيام">
+
+    <button onclick="createPlan()">إنشاء الخطة</button>
+
+    <div id="plan"></div>
+  </div>
+
+  <div class="card">
+    <h2>⏰ مؤقت المذاكرة</h2>
+
+    <h1 id="timer">25:00</h1>
+
+    <button onclick="startTimer()">ابدأ</button>
+    <button onclick="resetTimer()">إعادة</button>
+  </div>
+
+  <div class="card">
+    <h2>📊 تقدّمك</h2>
+
+    <p id="progressText">أنجزي مهامك ليظهر تقدمك هنا.</p>
+
+    <div class="progress">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  وَتيرة — لأن التأخير ما يعني النهاية 💙
+</footer>
+
+<script>
+
+let timerSeconds = 25 * 60;
+let timerInterval = null;
+
+function createPlan() {
+
+  const subject = document.getElementById("subject").value;
+  const days = Number(document.getElementById("days").value);
+  const plan = document.getElementById("plan");
+
+  if (!subject || !days || days < 1) {
+    plan.innerHTML =
+      '<p class="message">اكتبي المادة وعدد الأيام أولًا 💙</p>';
+    return;
+  }
+
+  let html = "<h3>خطة " + subject + "</h3>";
+
+  for (let i = 1; i <= days; i++) {
+    html += `
+      <div class="task">
+        <input type="checkbox" onchange="updateProgress()">
+        <span>اليوم ${i} — مذاكرة جزء من ${subject}</span>
+      </div>
+    `;
+  }
+
+  plan.innerHTML = html;
+
+  updateProgress();
+}
+
+function updateProgress() {
+
+  const tasks = document.querySelectorAll('.task input');
+  const completed =
+    document.querySelectorAll('.task input:checked').length;
+
+  if (tasks.length === 0) return;
+
+  const percentage =
+    Math.round((completed / tasks.length) * 100);
+
+  document.getElementById("progressBar").style.width =
+    percentage + "%";
+
+  document.getElementById("progressText").innerText =
+    "أنجزتِ " + percentage + "% من خطتك 🎉";
+}
+
+function updateTimer() {
+
+  let minutes = Math.floor(timerSeconds / 60);
+  let seconds = timerSeconds % 60;
+
+  minutes = String(minutes).padStart(2, "0");
+  seconds = String(seconds).padStart(2, "0");
+
+  document.getElementById("timer").innerText =
+    minutes + ":" + seconds;
+
+  if (timerSeconds <= 0) {
+    clearInterval(timerInterval);
+    alert("خلص وقت المذاكرة! خذي استراحة قصيرة 💙");
+  }
+}
+
+function startTimer() {
+
+  if (timerInterval) return;
+
+  timerInterval = setInterval(() => {
+
+    if (timerSeconds > 0) {
+      timerSeconds--;
+      updateTimer();
+    }
+
+  }, 1000);
+}
+
+function resetTimer() {
+
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerSeconds = 25 * 60;
+  updateTimer();
+}
+
+updateTimer();
+
+</script>
+
+</body>
+</html>
