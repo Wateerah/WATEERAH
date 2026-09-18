@@ -1,463 +1,172 @@
-let plan = JSON.parse(localStorage.getItem("wateeraPlan")) || null;
+  /* توزيع الدروس */
 
-function savePlan() {
-  localStorage.setItem("wateeraPlan", JSON.stringify(plan));
-}
+  function distribute(total, days) {
 
-function showPage(id, button) {
-  document.querySelectorAll(".page").forEach(p =>
-    p.classList.remove("active")
-  );
+    const base = Math.floor(total / days);
 
-  document.getElementById(id).classList.add("active");
+    const extra = total % days;
 
-  document.querySelectorAll("nav button").forEach(b =>
-    b.classList.remove("active")
-  );
-
-  if (button) button.classList.add("active");
-
-  if (id === "plan") {
-    renderPlan();
-  }
-}
-
-function createPlan() {
-  const source = document.getElementById("source").value.trim();
-  const total = Number(document.getElementById("lessons").value);
-  const days = Number(document.getElementById("days").value);
-  const message = document.getElementById("message");
-
-  if (!source || total < 1 || days < 1) {
-    message.className = "message error";
-    message.textContent = "فضلاً أدخل جميع البيانات بشكل صحيح.";
-    return;
-  }
-
-  plan = {
-    source: source,
-    total: Math.floor(total),
-    days: Math.floor(days),
-    currentDay: 1,
-    completed: [],
-    rescheduled: false,
-    newDistribution: null
-  };
-
-  savePlan();
-
-  message.className = "message success";
-  message.textContent = "تم إنشاء خطتك بنجاح 🎉";
-
-  setTimeout(() => {
-    showPage("plan");
-  }, 500);
-}
-
-
-/* توزيع متساوٍ قدر الإمكان */
-function distribute(total, days) {
-  const base = Math.floor(total / days);
-  const extra = total % days;
-
-  return Array.from({ length: days }, (_, i) =>
-    base + (i < extra ? 1 : 0)
-  );
-}
-
-
-/* الحصول على الدروس */
-function getTasks() {
-
-  // إذا تمت إعادة الجدولة نستخدم الجدول الجديد
-  if (plan.rescheduled && plan.newDistribution) {
-    return getRescheduledTasks();
-  }
-
-  const distribution = distribute(
-    plan.total,
-    plan.days
-  );
-
-  let number = 1;
-
-  return distribution.map(count => {
-    const tasks = [];
-
-    for (let i = 0; i < count; i++) {
-      tasks.push(number++);
-    }
-
-    return tasks;
-  });
-}
-
-
-/* إنشاء جدول الدروس بعد إعادة الجدولة */
-function getRescheduledTasks() {
-
-  // الدروس التي لم تنجز
-  const remainingLessons = [];
-
-  for (let number = 1; number <= plan.total; number++) {
-
-    const key = "lesson-" + number;
-
-    if (!plan.completed.includes(key)) {
-      remainingLessons.push(number);
-    }
-  }
-
-  let position = 0;
-
-  return plan.newDistribution.map(count => {
-
-    const tasks = [];
-
-    for (
-      let i = 0;
-      i < count && position < remainingLessons.length;
-      i++
-    ) {
-      tasks.push(
-        remainingLessons[position]
-      );
-
-      position++;
-    }
-
-    return tasks;
-  });
-}
-
-
-/* إنجاز / إلغاء إنجاز درس */
-function toggleTask(key) {
-
-  const index =
-    plan.completed.indexOf(key);
-
-  if (index >= 0) {
-    plan.completed.splice(index, 1);
-  } else {
-    plan.completed.push(key);
-  }
-
-  savePlan();
-  renderPlan();
-}
-
-
-/* إعادة الجدولة الآلية */
-function reschedule() {
-
-  const completed =
-    plan.completed.length;
-
-  const remaining =
-    plan.total - completed;
-
-  const daysLeft =
-    Math.max(
-      1,
-      plan.days - plan.currentDay + 1
-    );
-
-
-  // لا توجد دروس متبقية
-  if (remaining <= 0) {
-
-    plan.newDistribution =
-      Array(daysLeft).fill(0);
-
-    plan.rescheduled = true;
-
-    savePlan();
-    renderPlan();
-
-    return;
-  }
-
-
-  // توزيع الدروس المتبقية
-  plan.newDistribution =
-    distribute(
-      remaining,
-      daysLeft
-    );
-
-  plan.rescheduled = true;
-
-  savePlan();
-  renderPlan();
-}
-
-
-/* الانتقال لليوم التالي */
-function nextDay() {
-
-  if (plan.currentDay < plan.days) {
-
-    plan.currentDay++;
-
-    savePlan();
-    renderPlan();
-  }
-}
-
-
-/* الرجوع للجدول الأصلي */
-function resetSchedule() {
-
-  plan.newDistribution = null;
-  plan.rescheduled = false;
-
-  savePlan();
-  renderPlan();
-}
-
-
-/* حذف الخطة */
-function deletePlan() {
-
-  const confirmed =
-    confirm("هل تريد حذف الخطة الحالية؟");
-
-  if (!confirmed) return;
-
-  plan = null;
-
-  localStorage.removeItem(
-    "wateeraPlan"
-  );
-
-  showPage("home");
-}
-
-
-/* عرض الخطة */
-function renderPlan() {
-
-  const container =
-    document.getElementById("planContent");
-
-
-  if (!plan) {
-
-    container.innerHTML = `
-      <div class="card">
-        <h2>لا توجد خطة حاليًا</h2>
-        <p>ابدأ بإنشاء خطتك الدراسية.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-
-  const completed =
-    plan.completed.length;
-
-  const remaining =
-    Math.max(
-      0,
-      plan.total - completed
-    );
-
-  const percent =
-    Math.round(
-      (completed / plan.total) * 100
-    );
-
-
-  const allTasks =
-    getTasks();
-
-  const todayTasks =
-    allTasks[plan.currentDay - 1] || [];
-
-
-  let html = `
-    <div class="card">
-
-      <h2>📚 ${plan.source}</h2>
-
-      <p>
-        ${plan.total} درس خلال ${plan.days} يوم
-      </p>
-
-      <div class="stats">
-
-        <div class="stat">
-          <strong>${plan.total}</strong>
-          إجمالي
-        </div>
-
-        <div class="stat">
-          <strong>${completed}</strong>
-          منجز
-        </div>
-
-        <div class="stat">
-          <strong>${remaining}</strong>
-          متبقي
-        </div>
-
-        <div class="stat">
-          <strong>${percent}%</strong>
-          التقدم
-        </div>
-
-      </div>
-
-      <div class="progress-bg">
-        <div
-          class="progress"
-          style="width:${percent}%">
-        </div>
-      </div>
-
-    </div>
-
-
-    <div class="card" style="margin-top:16px">
-
-      <h3>
-        📅 اليوم ${plan.currentDay}
-      </h3>
-
-      <p>
-        مهام اليوم: ${todayTasks.length} دروس
-      </p>
-  `;
-
-
-  if (todayTasks.length === 0) {
-
-    html += `
-      <p>
-        🎉 لا توجد مهام لهذا اليوم.
-      </p>
-    `;
-  }
-
-
-  todayTasks.forEach(number => {
-
-    const key =
-      "lesson-" + number;
-
-    const done =
-      plan.completed.includes(key);
-
-
-    html += `
-      <label
-        class="task ${done ? "done" : ""}">
-
-        <input
-          type="checkbox"
-          ${done ? "checked" : ""}
-          onchange="toggleTask('${key}')">
-
-        الدرس ${number}
-
-      </label>
-    `;
-  });
-
-
-  html += `
-    </div>
-
-
-    <div class="card" style="margin-top:16px">
-
-      <h3>
-        🔄 تأخرت عن الخطة؟
-      </h3>
-
-      <p>
-        يعيد وَتيرة توزيع الدروس
-        المتبقية تلقائيًا على الأيام المتاحة.
-      </p>
-
-      <button
-        class="main-btn"
-        onclick="reschedule()">
-
-        إعادة الجدولة الآلية
-
-      </button>
-
-      <button
-        class="secondary"
-        onclick="nextDay()">
-
-        اليوم التالي →
-
-      </button>
-
-    </div>
-  `;
-
-
-  /* عرض الجدول الجديد */
-  if (
-    plan.rescheduled &&
-    plan.newDistribution
-  ) {
-
-    html += `
-      <div class="card" style="margin-top:16px">
-
-        <h3>
-          ✨ الجدول الجديد
-        </h3>
-
-        <p>
-          تمت إعادة توزيع
-          ${remaining}
-          درس على الأيام المتبقية:
-        </p>
-    `;
-
-
-    plan.newDistribution.forEach(
-      (count, index) => {
-
-        const day =
-          plan.currentDay + index;
-
-
-        html += `
-          <p>
-            <strong>
-              اليوم ${day}
-            </strong>
-            — ${count} درس
-          </p>
-        `;
+    return Array.from(
+      { length: days },
+      (_, index) => {
+        return base + (index < extra ? 1 : 0);
       }
     );
 
-
-    html += `
-        <button
-          class="secondary"
-          onclick="resetSchedule()">
-
-          الرجوع للجدول الأصلي
-
-        </button>
-
-      </div>
-    `;
   }
 
 
-  container.innerHTML = html;
-}
+  /* إنشاء المهام */
+
+  function getTasks() {
+
+    // الجدول الأصلي
+    if (!plan.rescheduled || !plan.newDistribution) {
+
+      const distribution =
+        distribute(plan.total, plan.days);
+
+      let number = 1;
+
+      return distribution.map(count => {
+
+        const tasks = [];
+
+        for (let i = 0; i < count; i++) {
+          tasks.push(number);
+          number++;
+        }
+
+        return tasks;
+
+      });
+
+    }
 
 
-renderPlan();
+    // بعد إعادة الجدولة
+    const remainingLessons = [];
+
+    for (
+      let number = 1;
+      number <= plan.total;
+      number++
+    ) {
+
+      const key = "lesson-" + number;
+
+      if (!plan.completed.includes(key)) {
+        remainingLessons.push(number);
+      }
+
+    }
+
+
+    const result = [];
+
+    // الأيام السابقة لليوم الحالي
+    for (
+      let i = 0;
+      i < plan.currentDay - 1;
+      i++
+    ) {
+      result.push([]);
+    }
+
+
+    // توزيع الدروس المتبقية
+    let position = 0;
+
+    plan.newDistribution.forEach(count => {
+
+      const tasks = [];
+
+      for (
+        let i = 0;
+        i < count && position < remainingLessons.length;
+        i++
+      ) {
+
+        tasks.push(
+          remainingLessons[position]
+        );
+
+        position++;
+
+      }
+
+      result.push(tasks);
+
+    });
+
+
+    return result;
+
+  }
+
+
+  /* إنجاز المهمة */
+
+  function toggleTask(key) {
+
+    const index =
+      plan.completed.indexOf(key);
+
+
+    if (index >= 0) {
+
+      plan.completed.splice(index, 1);
+
+    } else {
+
+      plan.completed.push(key);
+
+    }
+
+
+    savePlan();
+
+    renderPlan();
+
+  }
+
+
+  /* إعادة الجدولة */
+
+  function reschedule() {
+
+    const completed =
+      plan.completed.length;
+
+
+    const remaining =
+      Math.max(
+        0,
+        plan.total - completed
+      );
+
+
+    const daysLeft =
+      Math.max(
+        1,
+        plan.days -
+        plan.currentDay +
+        1
+      );
+
+
+    plan.newDistribution =
+      distribute(
+        remaining,
+        daysLeft
+      );
+
+
+    plan.rescheduled = true;
+
+
+    savePlan();
+
+    renderPlan();
+
+  }
