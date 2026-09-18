@@ -1,22 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-const SUPABASE_URL = "https://lbdryihslcefstaasrjy.supabase.co";
-const SUPABASE_KEY = "sb_publishable_AK_kC5gf4zLXYN0TQOvJIA_krDfsq4y_PUBLISHABLE_KEY";
-
-const db = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-let deviceId = localStorage.getItem("wateeraDeviceId");
-
-if (!deviceId) {
-  deviceId = crypto.randomUUID();
-  localStorage.setItem("wateeraDeviceId", deviceId);
-}
-</script>
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -25,6 +6,33 @@ if (!deviceId) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>وَتيرة | خطتك تتغير.. وهدفك ما يتغير</title>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL =
+      "https://lbdryihslcefstaasrjy.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_AK_kC5gf4zLXYN0TQOvJIA_krDfsq4y_PUBLISHABLE_KEY";
+
+    const db = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    let deviceId =
+      localStorage.getItem("wateeraDeviceId");
+
+    if (!deviceId) {
+      deviceId = crypto.randomUUID();
+      localStorage.setItem(
+        "wateeraDeviceId",
+        deviceId
+      );
+    }
+  </script>
 
   <style>
 
@@ -342,6 +350,12 @@ if (!deviceId) {
       padding: 35px;
     }
 
+    .saving {
+      text-align: center;
+      color: #718da0;
+      padding: 20px;
+    }
+
     footer {
       text-align: center;
       color: #8aa0af;
@@ -390,7 +404,6 @@ if (!deviceId) {
 
 </head>
 
-
 <body>
 
 <div class="app">
@@ -412,7 +425,6 @@ if (!deviceId) {
 
   </header>
 
-
   <nav>
 
     <button
@@ -433,9 +445,6 @@ if (!deviceId) {
 
   </nav>
 
-
-  <!-- الرئيسية -->
-
   <section id="home" class="page active">
 
     <div class="hero">
@@ -453,13 +462,10 @@ if (!deviceId) {
       <button
         class="main-btn"
         onclick="showPage('create')">
-
         ابدأ خطتك ✨
-
       </button>
 
     </div>
-
 
     <div class="features">
 
@@ -476,7 +482,6 @@ if (!deviceId) {
 
       </div>
 
-
       <div class="feature-card">
 
         <div class="icon">🗓️</div>
@@ -489,7 +494,6 @@ if (!deviceId) {
         </p>
 
       </div>
-
 
       <div class="feature-card">
 
@@ -508,9 +512,6 @@ if (!deviceId) {
 
   </section>
 
-
-  <!-- إنشاء خطة -->
-
   <section id="create" class="page">
 
     <div class="form-card">
@@ -522,7 +523,6 @@ if (!deviceId) {
         بتقسيم المنهج تلقائيًا على الأيام.
       </p>
 
-
       <label class="input-label">
         اسم المادة أو المصدر
       </label>
@@ -531,7 +531,6 @@ if (!deviceId) {
         id="source"
         type="text"
         placeholder="مثال: دورة القدرات">
-
 
       <label class="input-label">
         عدد الدروس
@@ -543,7 +542,6 @@ if (!deviceId) {
         min="1"
         placeholder="مثال: 150">
 
-
       <label class="input-label">
         عدد الأيام
       </label>
@@ -554,15 +552,11 @@ if (!deviceId) {
         min="1"
         placeholder="مثال: 30">
 
-
       <button
         class="main-btn"
         onclick="createPlan()">
-
         إنشاء الخطة ✨
-
       </button>
-
 
       <div id="message"></div>
 
@@ -570,15 +564,11 @@ if (!deviceId) {
 
   </section>
 
-
-  <!-- الخطة -->
-
   <section id="plan" class="page">
 
     <div id="planContent"></div>
 
   </section>
-
 
   <footer>
 
@@ -592,114 +582,167 @@ if (!deviceId) {
 
 </div>
 
-
 <script>
 
-  /*
-    ========================================
-    وَتيرة - نظام الخطط والحفظ
-    ========================================
-  */
+  let plan = null;
 
 
-  /* تحميل الخطة المحفوظة */
+  /* ================================
+     الحفظ المحلي
+  ================================= */
 
-  function loadPlan() {
+  function saveLocalPlan() {
 
     try {
 
-      const saved =
-        localStorage.getItem("wateeraPlan");
-
-      if (!saved) {
-        return null;
-      }
-
-      const loaded =
-        JSON.parse(saved);
-
-      /*
-        توافق مع النسخ القديمة:
-        إذا كانت completed تحتوي
-        على day-X-number نحولها
-        إلى lesson-number
-      */
-
-      if (
-        loaded &&
-        Array.isArray(loaded.completed)
-      ) {
-
-        loaded.completed =
-          loaded.completed
-            .map(key => {
-
-              if (
-                typeof key === "string" &&
-                key.startsWith("lesson-")
-              ) {
-                return key;
-              }
-
-              const match =
-                String(key).match(
-                  /^day-\d+-(\d+)$/
-                );
-
-              if (match) {
-                return "lesson-" + match[1];
-              }
-
-              return key;
-
-            })
-            .filter(
-              (key, index, array) =>
-                array.indexOf(key) === index
-            );
-
-      }
-
-
-      /*
-        إذا كانت الخطة القديمة
-        لا تحتوي schedule،
-        ننشئ الجدول الأصلي.
-      */
-
-      if (
-        loaded &&
-        !Array.isArray(loaded.schedule)
-      ) {
-
-        loaded.schedule =
-          createSchedule(
-            loaded.total,
-            loaded.days
-          );
-
-      }
-
-
-      /*
-        حفظ النسخة بعد التوافق
-      */
-
-      if (loaded) {
+      if (plan) {
 
         localStorage.setItem(
           "wateeraPlan",
-          JSON.stringify(loaded)
+          JSON.stringify(plan)
+        );
+
+      } else {
+
+        localStorage.removeItem(
+          "wateeraPlan"
         );
 
       }
 
-      return loaded;
+    } catch (error) {
+
+      console.error(
+        "Local storage error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /* ================================
+     الحفظ في Supabase
+  ================================= */
+
+  async function saveOnlinePlan() {
+
+    try {
+
+      if (!plan) {
+
+        const { error } =
+          await db
+            .from("plans")
+            .delete()
+            .eq("device_id", deviceId);
+
+        if (error) {
+          console.error(
+            "Delete error:",
+            error
+          );
+        }
+
+        return;
+      }
+
+
+      const { error } =
+        await db
+          .from("plans")
+          .upsert(
+            {
+              device_id: deviceId,
+              plan_data: plan,
+              updated_at:
+                new Date().toISOString()
+            },
+            {
+              onConflict: "device_id"
+            }
+          );
+
+
+      if (error) {
+
+        console.error(
+          "Supabase save error:",
+          error
+        );
+
+      }
 
     } catch (error) {
 
       console.error(
-        "خطأ في قراءة الخطة:",
+        "Online save error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /* ================================
+     حفظ الخطة
+  ================================= */
+
+  async function savePlan() {
+
+    saveLocalPlan();
+
+    await saveOnlinePlan();
+
+  }
+
+
+  /* ================================
+     تحميل الخطة من Supabase
+  ================================= */
+
+  async function loadOnlinePlan() {
+
+    try {
+
+      const { data, error } =
+        await db
+          .from("plans")
+          .select("plan_data")
+          .eq("device_id", deviceId)
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(
+          "Supabase load error:",
+          error
+        );
+
+        return null;
+
+      }
+
+
+      if (
+        data &&
+        data.plan_data
+      ) {
+
+        return data.plan_data;
+
+      }
+
+
+      return null;
+
+    } catch (error) {
+
+      console.error(
+        "Online load error:",
         error
       );
 
@@ -710,37 +753,88 @@ if (!deviceId) {
   }
 
 
-  let plan = loadPlan();
+  /* ================================
+     تحميل محلي
+  ================================= */
 
-
-  /* حفظ الخطة */
-
-  function savePlan() {
+  function loadLocalPlan() {
 
     try {
 
-      localStorage.setItem(
-        "wateeraPlan",
-        JSON.stringify(plan)
-      );
+      const saved =
+        localStorage.getItem(
+          "wateeraPlan"
+        );
 
-      return true;
+      if (!saved) {
+        return null;
+      }
+
+      return JSON.parse(saved);
 
     } catch (error) {
 
       console.error(
-        "خطأ في حفظ الخطة:",
+        "Local load error:",
         error
       );
 
-      return false;
+      return null;
 
     }
 
   }
 
 
-  /* التنقل */
+  /* ================================
+     تشغيل التطبيق
+  ================================= */
+
+  async function initializeApp() {
+
+    const container =
+      document.getElementById(
+        "planContent"
+      );
+
+
+    container.innerHTML = `
+      <div class="card saving">
+        جاري تحميل خطتك...
+      </div>
+    `;
+
+
+    const localPlan =
+      loadLocalPlan();
+
+
+    if (localPlan) {
+      plan = localPlan;
+    }
+
+
+    const onlinePlan =
+      await loadOnlinePlan();
+
+
+    if (onlinePlan) {
+
+      plan = onlinePlan;
+
+      saveLocalPlan();
+
+    }
+
+
+    renderPlan();
+
+  }
+
+
+  /* ================================
+     التنقل
+  ================================= */
 
   function showPage(id, button) {
 
@@ -779,7 +873,9 @@ if (!deviceId) {
   }
 
 
-  /* إنشاء توزيع الأيام */
+  /* ================================
+     توزيع الدروس
+  ================================= */
 
   function distribute(total, days) {
 
@@ -792,18 +888,13 @@ if (!deviceId) {
 
     return Array.from(
       { length: days },
-      (_, index) => {
-
-        return base +
-          (index < extra ? 1 : 0);
-
-      }
+      (_, index) =>
+        base +
+        (index < extra ? 1 : 0)
     );
 
   }
 
-
-  /* إنشاء جدول كامل */
 
   function createSchedule(total, days) {
 
@@ -825,7 +916,9 @@ if (!deviceId) {
         i++
       ) {
 
-        lessons.push(lessonNumber);
+        lessons.push(
+          lessonNumber
+        );
 
         lessonNumber++;
 
@@ -839,9 +932,11 @@ if (!deviceId) {
   }
 
 
-  /* إنشاء خطة */
+  /* ================================
+     إنشاء خطة
+  ================================= */
 
-  function createPlan() {
+  async function createPlan() {
 
     const source =
       document
@@ -852,18 +947,24 @@ if (!deviceId) {
 
     const total =
       Number(
-        document.getElementById("lessons").value
+        document
+          .getElementById("lessons")
+          .value
       );
 
 
     const days =
       Number(
-        document.getElementById("days").value
+        document
+          .getElementById("days")
+          .value
       );
 
 
     const message =
-      document.getElementById("message");
+      document.getElementById(
+        "message"
+      );
 
 
     if (
@@ -888,14 +989,10 @@ if (!deviceId) {
     const finalTotal =
       Math.floor(total);
 
+
     const finalDays =
       Math.floor(days);
 
-
-    /*
-      إنشاء جدول ثابت:
-      كل درس له رقم ثابت
-    */
 
     const schedule =
       createSchedule(
@@ -928,28 +1025,18 @@ if (!deviceId) {
     };
 
 
-    const saved =
-      savePlan();
-
-
-    if (!saved) {
-
-      message.className =
-        "message error";
-
-      message.textContent =
-        "تعذر حفظ الخطة على هذا المتصفح.";
-
-      return;
-
-    }
-
-
     message.className =
       "message success";
 
     message.textContent =
-      "تم إنشاء خطتك بنجاح 🎉";
+      "جاري حفظ خطتك...";
+
+
+    await savePlan();
+
+
+    message.textContent =
+      "تم إنشاء خطتك وحفظها بنجاح 🎉";
 
 
     setTimeout(() => {
@@ -961,9 +1048,18 @@ if (!deviceId) {
   }
 
 
-  /* إنجاز / إلغاء إنجاز درس */
+  /* ================================
+     إنجاز الدرس
+  ================================= */
 
-  function toggleTask(lessonNumber) {
+  async function toggleTask(
+    lessonNumber
+  ) {
+
+    if (!plan) {
+      return;
+    }
+
 
     const key =
       "lesson-" + lessonNumber;
@@ -975,7 +1071,10 @@ if (!deviceId) {
 
     if (index >= 0) {
 
-      plan.completed.splice(index, 1);
+      plan.completed.splice(
+        index,
+        1
+      );
 
     } else {
 
@@ -984,16 +1083,16 @@ if (!deviceId) {
     }
 
 
-    savePlan();
-
     renderPlan();
+
+    await savePlan();
 
   }
 
 
-  /* التحقق من إنجاز الدرس */
-
-  function isCompleted(lessonNumber) {
+  function isCompleted(
+    lessonNumber
+  ) {
 
     return plan.completed.includes(
       "lesson-" + lessonNumber
@@ -1002,18 +1101,16 @@ if (!deviceId) {
   }
 
 
-  /* إعادة الجدولة الآلية */
+  /* ================================
+     إعادة الجدولة
+  ================================= */
 
-  function reschedule() {
+  async function reschedule() {
 
     if (!plan) {
       return;
     }
 
-
-    /*
-      جمع الدروس التي لم تنجز بعد
-    */
 
     const remainingLessons = [];
 
@@ -1037,11 +1134,6 @@ if (!deviceId) {
     }
 
 
-    /*
-      الأيام المتبقية تشمل
-      اليوم الحالي.
-    */
-
     const daysLeft =
       Math.max(
         1,
@@ -1051,11 +1143,6 @@ if (!deviceId) {
       );
 
 
-    /*
-      توزيع الدروس المتبقية
-      بالتساوي قدر الإمكان.
-    */
-
     const distribution =
       distribute(
         remainingLessons.length,
@@ -1063,16 +1150,8 @@ if (!deviceId) {
       );
 
 
-    const newSchedule =
-      [];
+    const newSchedule = [];
 
-
-    /*
-      نحافظ على الأيام السابقة
-      كما هي، ثم نستبدل
-      الأيام الحالية والقادمة
-      بالخطة الجديدة.
-    */
 
     for (
       let i = 0;
@@ -1127,20 +1206,23 @@ if (!deviceId) {
     plan.schedule =
       newSchedule;
 
+
     plan.rescheduled =
       true;
 
 
-    savePlan();
-
     renderPlan();
+
+    await savePlan();
 
   }
 
 
-  /* اليوم التالي */
+  /* ================================
+     اليوم التالي
+  ================================= */
 
-  function nextDay() {
+  async function nextDay() {
 
     if (!plan) {
       return;
@@ -1154,18 +1236,20 @@ if (!deviceId) {
 
       plan.currentDay++;
 
-      savePlan();
-
       renderPlan();
+
+      await savePlan();
 
     }
 
   }
 
 
-  /* الرجوع للجدول الأصلي */
+  /* ================================
+     الرجوع للجدول الأصلي
+  ================================= */
 
-  function resetSchedule() {
+  async function resetSchedule() {
 
     if (!plan) {
       return;
@@ -1188,16 +1272,18 @@ if (!deviceId) {
       false;
 
 
-    savePlan();
-
     renderPlan();
+
+    await savePlan();
 
   }
 
 
-  /* حذف الخطة */
+  /* ================================
+     حذف الخطة
+  ================================= */
 
-  function deletePlan() {
+  async function deletePlan() {
 
     const confirmed =
       confirm(
@@ -1213,9 +1299,9 @@ if (!deviceId) {
     plan = null;
 
 
-    localStorage.removeItem(
-      "wateeraPlan"
-    );
+    saveLocalPlan();
+
+    await saveOnlinePlan();
 
 
     showPage("home");
@@ -1241,7 +1327,9 @@ if (!deviceId) {
   }
 
 
-  /* حماية النصوص */
+  /* ================================
+     حماية النص
+  ================================= */
 
   function escapeHTML(text) {
 
@@ -1256,7 +1344,9 @@ if (!deviceId) {
   }
 
 
-  /* عرض الخطة */
+  /* ================================
+     عرض الخطة
+  ================================= */
 
   function renderPlan() {
 
@@ -1303,10 +1393,6 @@ if (!deviceId) {
     }
 
 
-    /*
-      التأكد من وجود الجدول
-    */
-
     if (
       !Array.isArray(plan.schedule)
     ) {
@@ -1316,8 +1402,6 @@ if (!deviceId) {
           plan.total,
           plan.days
         );
-
-      savePlan();
 
     }
 
@@ -1338,7 +1422,8 @@ if (!deviceId) {
         ? Math.min(
             100,
             Math.round(
-              (completed / plan.total) * 100
+              (completed /
+              plan.total) * 100
             )
           )
         : 0;
@@ -1363,54 +1448,37 @@ if (!deviceId) {
           ${plan.days} يوم
         </p>
 
-
         <div class="stats">
 
           <div class="stat">
-
             <strong>
               ${plan.total}
             </strong>
-
             إجمالي
-
           </div>
 
-
           <div class="stat">
-
             <strong>
               ${completed}
             </strong>
-
             منجز
-
           </div>
 
-
           <div class="stat">
-
             <strong>
               ${remaining}
             </strong>
-
             متبقي
-
           </div>
 
-
           <div class="stat">
-
             <strong>
               ${percent}%
             </strong>
-
             التقدم
-
           </div>
 
         </div>
-
 
         <div class="progress-bg">
 
@@ -1507,7 +1575,6 @@ if (!deviceId) {
           المتبقية على الأيام المتاحة.
         </p>
 
-
         <button
           class="main-btn"
           onclick="reschedule()">
@@ -1515,7 +1582,6 @@ if (!deviceId) {
           إعادة الجدولة الآلية
 
         </button>
-
 
         <button
           class="secondary"
@@ -1529,10 +1595,6 @@ if (!deviceId) {
 
     `;
 
-
-    /*
-      عرض الجدول الجديد
-    */
 
     if (plan.rescheduled) {
 
@@ -1642,9 +1704,9 @@ if (!deviceId) {
   }
 
 
-  /* تشغيل التطبيق */
+  /* بدء التطبيق */
 
-  renderPlan();
+  initializeApp();
 
 </script>
 
