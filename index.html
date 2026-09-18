@@ -1,3 +1,22 @@
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://lbdryihslcefstaasrjy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_AK_kC5gf4zLXYN0TQOvJIA_krDfsq4y_PUBLISHABLE_KEY";
+
+const db = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+let deviceId = localStorage.getItem("wateeraDeviceId");
+
+if (!deviceId) {
+  deviceId = crypto.randomUUID();
+  localStorage.setItem("wateeraDeviceId", deviceId);
+}
+</script>
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
