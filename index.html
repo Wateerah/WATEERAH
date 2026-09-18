@@ -1,534 +1,62 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+const STORAGE_KEY = "wateeraPlan_v3";
 
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+let plan = loadPlan();
 
-<title>وَتيرة</title>
+/* =========================
+   الحفظ والاسترجاع
+========================= */
 
-<style>
-
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+function savePlan() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
+    return true;
+  } catch (error) {
+    console.error("خطأ في حفظ الخطة:", error);
+    return false;
+  }
 }
 
-body {
-  margin: 0;
-  background: #eef8ff;
-  color: #17324d;
+function loadPlan() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) return null;
+
+    return JSON.parse(saved);
+  } catch (error) {
+    console.error("خطأ في استرجاع الخطة:", error);
+    return null;
+  }
 }
-
-header {
-  background: linear-gradient(135deg, #55b9f3, #8ed8ff);
-  color: white;
-  padding: 28px 20px;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 40px;
-}
-
-header p {
-  margin: 8px 0 0;
-  font-size: 16px;
-}
-
-.container {
-  max-width: 800px;
-  margin: 25px auto;
-  padding: 20px;
-}
-
-.card {
-  background: white;
-  border-radius: 20px;
-  padding: 22px;
-  margin-bottom: 20px;
-  box-shadow: 0 5px 18px rgba(0,0,0,0.08);
-}
-
-h2 {
-  margin-top: 0;
-}
-
-label {
-  display: block;
-  margin: 14px 0 7px;
-  font-weight: bold;
-}
-
-select,
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  padding: 13px;
-  border: 2px solid #d7edf9;
-  border-radius: 12px;
-  font-size: 16px;
-  background: white;
-}
-
-button {
-  border: none;
-  border-radius: 12px;
-  padding: 13px 18px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 12px;
-}
-
-.primary {
-  background: #55b9f3;
-  color: white;
-  width: 100%;
-}
-
-.secondary {
-  background: #e7f6ff;
-  color: #1976a8;
-}
-
-.danger {
-  background: #ffe7e7;
-  color: #c0392b;
-}
-
-.hidden {
-  display: none;
-}
-
-.message {
-  background: #eef9ff;
-  border-radius: 12px;
-  padding: 13px;
-  margin-top: 15px;
-  text-align: center;
-}
-
-.day {
-  border: 2px solid #e0f2fc;
-  border-radius: 16px;
-  padding: 15px;
-  margin-top: 15px;
-}
-
-.day h3 {
-  margin-top: 0;
-  color: #2388bd;
-}
-
-.task {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px;
-  background: #f7fcff;
-  border-radius: 10px;
-  margin: 8px 0;
-}
-
-.task input {
-  width: 20px;
-  height: 20px;
-}
-
-.done {
-  text-decoration: line-through;
-  opacity: 0.5;
-}
-
-.progress-container {
-  background: #e5f4fc;
-  border-radius: 20px;
-  overflow: hidden;
-  height: 18px;
-  margin-top: 12px;
-}
-
-.progress {
-  background: #55b9f3;
-  height: 100%;
-  width: 0%;
-  transition: 0.3s;
-}
-
-.timer {
-  text-align: center;
-}
-
-.timer-number {
-  font-size: 55px;
-  font-weight: bold;
-  color: #2388bd;
-  margin: 10px;
-}
-
-.info-box {
-  background: #f5fbff;
-  border-radius: 14px;
-  padding: 14px;
-  margin-top: 15px;
-  line-height: 1.7;
-}
-
-</style>
-</head>
-
-
-<body>
-
-<header>
-
-  <h1>وَتيرة📝 </h1>
-
-  <p>
-    خطتك الدراسية تتنظم معك، حتى عند التأخر.
-  </p>
-
-</header>
-
-
-<div class="container">
-
-
-<!-- إنشاء الخطة -->
-
-<div class="card">
-
-  <h2>✨ أنشئ خطتك</h2>
-
-  <label>اختر المادة</label>
-
-  <select id="subject" onchange="checkOtherSubject()">
-
-    <option value="">
-      اختر المادة
-    </option>
-
-    <option value="رياضيات">
-      رياضيات
-    </option>
-
-    <option value="كيمياء">
-      كيمياء
-    </option>
-
-    <option value="فيزياء">
-      فيزياء
-    </option>
-
-    <option value="أحياء">
-      أحياء
-    </option>
-
-    <option value="قدرات">
-      قدرات
-    </option>
-
-    <option value="تحصيلي">
-      تحصيلي
-    </option>
-
-    <option value="other">
-      مادة أخرى
-    </option>
-
-  </select>
-
-
-  <!-- مادة أخرى -->
-
-  <div id="otherSubjectBox" class="hidden">
-
-    <label>
-      اكتب اسم المادة
-    </label>
-
-    <input
-      type="text"
-      id="otherSubject"
-      placeholder="مثال: لغتي"
-    >
-
-  </div>
-
-
-  <label>
-    عدد أيام الخطة
-  </label>
-
-  <input
-    type="number"
-    id="days"
-    min="1"
-    max="30"
-    placeholder="مثال: 7"
-  >
-
-
-  <button
-    class="primary"
-    onclick="createPlan()"
-  >
-    ✨ أنشئ الخطة
-  </button>
-
-
-  <div id="message"></div>
-
-</div>
-
-
-
-<!-- الخطة -->
-
-<div class="card">
-
-  <h2>
-    📚 خطتي الدراسية
-  </h2>
-
-
-  <div id="plan"></div>
-
-
-  <!-- اختيار اليوم الحالي -->
-
-  <div id="currentDayBox" class="hidden">
-
-    <label>
-      اليوم الحالي
-    </label>
-
-    <select
-      id="currentDay"
-      onchange="changeCurrentDay()"
-    ></select>
-
-
-    <div class="info-box">
-
-      إذا تأخرت في مهام هذا اليوم،
-      سيتم نقل المهام غير المكتملة إلى الأيام التالية
-      مع الحفاظ على بقية الخطة.
-
-    </div>
-
-
-    <button
-      class="secondary"
-      onclick="lateDay()"
-    >
-      🔄 تأخرت اليوم
-
-    </button>
-
-  </div>
-
-
-  <button
-    class="danger"
-    onclick="clearPlan()"
-  >
-    🗑️ حذف الخطة
-  </button>
-
-
-  <br><br>
-
-
-  <strong>
-    نسبة الإنجاز
-  </strong>
-
-
-  <div class="progress-container">
-
-    <div
-      class="progress"
-      id="progress"
-    ></div>
-
-  </div>
-
-
-  <p id="progressText">
-    0%
-  </p>
-
-</div>
-
-
-
-<!-- المؤقت -->
-
-<div class="card timer">
-
-  <h2>
-    ⏱️ مؤقت المذاكرة
-  </h2>
-
-
-  <div
-    class="timer-number"
-    id="timer"
-  >
-    25:00
-  </div>
-
-
-  <button
-    class="primary"
-    onclick="startTimer()"
-  >
-    ▶️ ابدأ
-  </button>
-
-
-  <button
-    class="secondary"
-    onclick="pauseTimer()"
-  >
-    ⏸️ إيقاف
-  </button>
-
-
-  <button
-    class="danger"
-    onclick="resetTimer()"
-  >
-    🔄 إعادة
-  </button>
-
-</div>
-
-
-</div>
-
-
-
-<script>
 
 
 /* =========================
-   المهام الأساسية
+   التنقل بين الصفحات
 ========================= */
 
-const taskTemplates = {
+function showPage(id, button) {
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.remove("active");
+  });
 
-  "رياضيات": [
-    "فهم الدرس",
-    "مراجعة القوانين",
-    "حل أمثلة الدرس",
-    "حل تمارين متنوعة",
-    "مراجعة الأخطاء",
-    "اختبار قصير"
-  ],
+  const page = document.getElementById(id);
 
-  "كيمياء": [
-    "قراءة الدرس وفهم المفاهيم",
-    "مراجعة المصطلحات والقوانين",
-    "حل الأمثلة",
-    "حل أسئلة نهاية الدرس",
-    "مراجعة النقاط الصعبة",
-    "اختبار قصير"
-  ],
-
-  "فيزياء": [
-    "فهم المفاهيم الأساسية",
-    "مراجعة القوانين والوحدات",
-    "حل الأمثلة",
-    "حل مسائل متنوعة",
-    "مراجعة الأخطاء",
-    "اختبار قصير"
-  ],
-
-  "أحياء": [
-    "قراءة الدرس وفهمه",
-    "مراجعة المصطلحات",
-    "تلخيص الأفكار الأساسية",
-    "مراجعة الرسومات والمفاهيم",
-    "حل الأسئلة",
-    "اختبار قصير"
-  ],
-
-  "قدرات": [
-    "مراجعة المهارات الأساسية",
-    "تدريب كمي",
-    "تدريب لفظي",
-    "حل مجموعة أسئلة",
-    "مراجعة الأخطاء",
-    "تدريب زمني"
-  ],
-
-  "تحصيلي": [
-    "مراجعة المفاهيم",
-    "تدريب على الأسئلة",
-    "مراجعة القوانين",
-    "حل أسئلة متنوعة",
-    "مراجعة الأخطاء",
-    "اختبار تجريبي"
-  ],
-
-  "default": [
-    "قراءة الدرس وفهمه",
-    "تحديد الأفكار المهمة",
-    "مراجعة المعلومات",
-    "حل التدريبات",
-    "مراجعة الأخطاء",
-    "مراجعة نهائية"
-  ]
-
-};
-
-
-
-/* =========================
-   تحميل الخطة المحفوظة
-========================= */
-
-let plan =
-  JSON.parse(
-    localStorage.getItem("wateeraPlan")
-  ) || null;
-
-
-let currentDay =
-  Number(
-    localStorage.getItem("wateeraCurrentDay")
-  ) || 1;
-
-
-
-/* =========================
-   إظهار مادة أخرى
-========================= */
-
-function checkOtherSubject() {
-
-  const subject =
-    document.getElementById("subject").value;
-
-  const box =
-    document.getElementById("otherSubjectBox");
-
-
-  if (subject === "other") {
-
-    box.classList.remove("hidden");
-
-  } else {
-
-    box.classList.add("hidden");
-
+  if (page) {
+    page.classList.add("active");
   }
 
-}
+  document.querySelectorAll("nav button").forEach(btn => {
+    btn.classList.remove("active");
+  });
 
+  if (button) {
+    button.classList.add("active");
+  }
+
+  if (id === "plan") {
+    renderPlan();
+  }
+}
 
 
 /* =========================
@@ -536,129 +64,259 @@ function checkOtherSubject() {
 ========================= */
 
 function createPlan() {
+  const source = document.getElementById("source").value.trim();
+  const total = Number(document.getElementById("lessons").value);
+  const days = Number(document.getElementById("days").value);
+  const message = document.getElementById("message");
 
-  let subject =
-    document.getElementById("subject").value;
-
-  const days =
-    Number(
-      document.getElementById("days").value
-    );
-
-
-  if (!subject) {
-
-    showMessage(
-      "اختر المادة أولًا 💙"
-    );
-
+  if (
+    !source ||
+    !Number.isFinite(total) ||
+    !Number.isFinite(days) ||
+    total < 1 ||
+    days < 1
+  ) {
+    message.className = "message error";
+    message.textContent =
+      "فضلاً أدخل جميع البيانات بشكل صحيح.";
     return;
   }
-
-
-  /* مادة أخرى */
-
-  if (subject === "other") {
-
-    subject =
-      document
-      .getElementById("otherSubject")
-      .value
-      .trim();
-
-
-    if (!subject) {
-
-      showMessage(
-        "اكتب اسم المادة 💙"
-      );
-
-      return;
-    }
-
-  }
-
-
-  if (!days || days < 1) {
-
-    showMessage(
-      "اكتب عدد أيام الخطة 💙"
-    );
-
-    return;
-  }
-
-
-
-  const tasks =
-    taskTemplates[subject]
-    || taskTemplates["default"];
-
 
   plan = {
-
-    subject: subject,
-
-    days: []
-
+    source: source,
+    total: Math.floor(total),
+    days: Math.floor(days),
+    currentDay: 1,
+    completed: [],
+    rescheduled: false,
+    newDistribution: null
   };
-
-
-
-  /*
-    توزيع المهام على الأيام
-  */
-
-  for (
-    let i = 0;
-    i < days;
-    i++
-  ) {
-
-    plan.days.push({
-
-      day: i + 1,
-
-      tasks: [
-
-        {
-
-          text:
-            tasks[
-              i % tasks.length
-            ],
-
-          done: false
-
-        }
-
-      ]
-
-    });
-
-  }
-
-
-
-  currentDay = 1;
-
 
   savePlan();
 
-  saveCurrentDay();
+  message.className = "message success";
+  message.textContent =
+    "🎉 تم إنشاء خطتك وحفظها بنجاح!";
+
+  setTimeout(() => {
+    showPage("plan");
+  }, 500);
+}
+
+
+/* =========================
+   توزيع الدروس
+========================= */
+
+function distribute(total, days) {
+  const base = Math.floor(total / days);
+  const extra = total % days;
+
+  return Array.from(
+    { length: days },
+    (_, index) =>
+      base + (index < extra ? 1 : 0)
+  );
+}
+
+
+/* =========================
+   الخطة الأصلية
+========================= */
+
+function getOriginalTasks() {
+  if (!plan) return [];
+
+  const distribution =
+    distribute(plan.total, plan.days);
+
+  let lessonNumber = 1;
+
+  return distribution.map(count => {
+    const tasks = [];
+
+    for (let i = 0; i < count; i++) {
+      tasks.push(lessonNumber);
+      lessonNumber++;
+    }
+
+    return tasks;
+  });
+}
+
+
+/* =========================
+   الدروس المنجزة
+========================= */
+
+function getCompletedLessons() {
+  if (!plan) return [];
+
+  return plan.completed.map(key => {
+    return Number(
+      key.replace("lesson-", "")
+    );
+  });
+}
+
+
+/* =========================
+   المهام الحالية
+========================= */
+
+function getCurrentTasks() {
+  if (!plan) return [];
+
+  if (
+    !plan.rescheduled ||
+    !plan.newDistribution
+  ) {
+    return getOriginalTasks();
+  }
+
+  const completed =
+    getCompletedLessons();
+
+  const remainingLessons = [];
+
+  for (let i = 1; i <= plan.total; i++) {
+    if (!completed.includes(i)) {
+      remainingLessons.push(i);
+    }
+  }
+
+  const result = [];
+
+  let position = 0;
+
+  for (
+    let i = 0;
+    i < plan.newDistribution.length;
+    i++
+  ) {
+    const count =
+      plan.newDistribution[i];
+
+    result.push(
+      remainingLessons.slice(
+        position,
+        position + count
+      )
+    );
+
+    position += count;
+  }
+
+  return [
+    ...Array.from(
+      { length: plan.currentDay - 1 },
+      () => []
+    ),
+    ...result
+  ];
+}
+
+
+/* =========================
+   تحديد الدرس كمنجز
+========================= */
+
+function toggleTask(lessonNumber) {
+  if (!plan) return;
+
+  const key =
+    "lesson-" + lessonNumber;
+
+  const index =
+    plan.completed.indexOf(key);
+
+  if (index >= 0) {
+    plan.completed.splice(index, 1);
+  } else {
+    plan.completed.push(key);
+  }
+
+  savePlan();
+
+  renderPlan();
+}
+
+
+/* =========================
+   إعادة الجدولة
+========================= */
+
+function reschedule() {
+  if (!plan) return;
+
+  const completed =
+    plan.completed.length;
+
+  const remaining =
+    Math.max(
+      0,
+      plan.total - completed
+    );
+
+  const daysLeft =
+    Math.max(
+      1,
+      plan.days - plan.currentDay + 1
+    );
+
+  plan.newDistribution =
+    distribute(
+      remaining,
+      daysLeft
+    );
+
+  plan.rescheduled = true;
+
+  savePlan();
+
+  renderPlan();
+}
+
+
+/* =========================
+   اليوم التالي
+========================= */
+
+function nextDay() {
+  if (!plan) return;
+
+  if (plan.currentDay < plan.days) {
+    plan.currentDay++;
+
+    savePlan();
+
+    renderPlan();
+  }
+}
+
+
+/* =========================
+   حذف الخطة
+========================= */
+
+function resetPlan() {
+  const confirmed =
+    confirm(
+      "هل أنت متأكد من حذف الخطة؟"
+    );
+
+  if (!confirmed) return;
+
+  localStorage.removeItem(
+    STORAGE_KEY
+  );
+
+  plan = null;
 
   renderPlan();
 
-
-  showMessage(
-
-    `تم إنشاء خطة مادة <strong>${subject}</strong>
-     لمدة <strong>${days}</strong> أيام ✨`
-
-  );
-
+  showPage("create");
 }
-
 
 
 /* =========================
@@ -666,679 +324,321 @@ function createPlan() {
 ========================= */
 
 function renderPlan() {
+  const container =
+    document.getElementById(
+      "planContent"
+    );
 
-  const planDiv =
-    document.getElementById("plan");
-
-
-  const currentDayBox =
-    document.getElementById("currentDayBox");
-
+  if (!container) return;
 
   if (!plan) {
+    container.innerHTML = `
+      <div class="card">
+        <h2>لا توجد خطة حاليًا 📚</h2>
 
-    planDiv.innerHTML = `
+        <p>
+          ابدء بإنشاء خطتك الدراسية،
+          وسيحفظها وَتيرة تلقائيًا.
+        </p>
 
-      <div class="message">
+        <button
+          class="main-btn"
+          onclick="showPage('create')"
+        >
+          إنشاء خطة جديدة ✨
+        </button>
+      </div>
+    `;
 
-        لا توجد خطة حاليًا.
-        أنشئ خطة من الأعلى ✨
+    return;
+  }
+
+  const completed =
+    plan.completed.length;
+
+  const remaining =
+    Math.max(
+      0,
+      plan.total - completed
+    );
+
+  const percent =
+    Math.min(
+      100,
+      Math.round(
+        (completed / plan.total) * 100
+      )
+    );
+
+  const allTasks =
+    getCurrentTasks();
+
+  const todayTasks =
+    allTasks[
+      plan.currentDay - 1
+    ] || [];
+
+  let html = `
+    <div class="card">
+
+      <h2>
+        📚 ${escapeHTML(plan.source)}
+      </h2>
+
+      <p>
+        ${plan.total} درس
+        •
+        ${plan.days} يوم
+      </p>
+
+      <div class="stats">
+
+        <div class="stat">
+          <strong>
+            ${plan.total}
+          </strong>
+          إجمالي
+        </div>
+
+        <div class="stat">
+          <strong>
+            ${completed}
+          </strong>
+          منجز
+        </div>
+
+        <div class="stat">
+          <strong>
+            ${remaining}
+          </strong>
+          متبقي
+        </div>
+
+        <div class="stat">
+          <strong>
+            ${percent}%
+          </strong>
+          التقدم
+        </div>
 
       </div>
 
-    `;
+      <div class="progress-bg">
+        <div
+          class="progress"
+          style="width:${percent}%"
+        ></div>
+      </div>
+
+    </div>
 
 
-    currentDayBox.classList.add("hidden");
+    <div
+      class="card"
+      style="margin-top:16px"
+    >
 
-    updateProgress();
+      <h3>
+        📅 اليوم ${plan.currentDay}
+      </h3>
 
-    return;
-  }
-
-
-
-  currentDayBox.classList.remove("hidden");
-
-
-
-  /*
-    إنشاء قائمة الأيام
-  */
-
-  const currentDaySelect =
-    document.getElementById("currentDay");
-
-
-  currentDaySelect.innerHTML = "";
-
-
-  plan.days.forEach(day => {
-
-    const option =
-      document.createElement("option");
-
-
-    option.value = day.day;
-
-    option.textContent =
-      `اليوم ${day.day}`;
-
-
-    if (day.day === currentDay) {
-
-      option.selected = true;
-
-    }
-
-
-    currentDaySelect.appendChild(option);
-
-  });
-
-
-
-  let html = `
-
-    <h3>
-      المادة: ${plan.subject}
-    </h3>
-
+      <p>
+        ${todayTasks.length}
+        ${todayTasks.length === 1 ? "درس" : "دروس"}
+        اليوم
+      </p>
   `;
 
 
+  /* =========================
+     مهام اليوم
+  ========================= */
 
-  plan.days.forEach(
-    (day, dayIndex) => {
+  if (todayTasks.length === 0) {
+
+    html += `
+      <div class="message success">
+        🎉 أحسنت ! لا توجد مهام متبقية لهذا اليوم.
+      </div>
+    `;
+
+  } else {
+
+    todayTasks.forEach(lessonNumber => {
+
+      const key =
+        "lesson-" + lessonNumber;
+
+      const done =
+        plan.completed.includes(key);
 
       html += `
+        <label
+          class="task ${done ? "done" : ""}"
+        >
 
-        <div class="day">
+          <input
+            type="checkbox"
+            ${done ? "checked" : ""}
+            onchange="toggleTask(${lessonNumber})"
+          >
 
-          <h3>
-            اليوم ${day.day}
-          </h3>
+          الدرس ${lessonNumber}
 
+        </label>
       `;
 
+    });
+
+  }
 
 
-      if (day.tasks.length === 0) {
+  html += `
+    </div>
+
+
+    <div
+      class="card"
+      style="margin-top:16px"
+    >
+
+      <h3>
+        🔄 تأخرت عن الخطة؟
+      </h3>
+
+      <p>
+        لا مشكلة! يعيد وَتيرة توزيع
+        الدروس المتبقية على الأيام المتبقية.
+      </p>
+
+      <button
+        class="main-btn"
+        onclick="reschedule()"
+      >
+        🔄 إعادة الجدولة الآلية
+      </button>
+
+      <button
+        class="secondary"
+        onclick="nextDay()"
+      >
+        اليوم التالي →
+      </button>
+
+      <button
+        class="secondary"
+        onclick="savePlan(); renderPlan();"
+      >
+        💾 حفظ الخطة
+      </button>
+
+      <button
+        class="secondary"
+        onclick="resetPlan()"
+      >
+        🗑️ حذف الخطة
+      </button>
+
+    </div>
+  `;
+
+
+  /* =========================
+     الخطة الجديدة
+  ========================= */
+
+  if (
+    plan.rescheduled &&
+    plan.newDistribution
+  ) {
+
+    html += `
+      <div
+        class="card"
+        style="margin-top:16px"
+      >
+
+        <h3>
+          ✨ تم تحديث خطتك
+        </h3>
+
+        <p>
+          تم إعادة توزيع
+          ${remaining}
+          درس على الأيام المتبقية:
+        </p>
+    `;
+
+    plan.newDistribution.forEach(
+      (count, index) => {
 
         html += `
-
           <p>
-            لا توجد مهام جديدة لهذا اليوم.
-          </p>
+            <strong>
+              اليوم
+              ${plan.currentDay + index}
+            </strong>
 
+            — ${count} درس
+          </p>
         `;
 
       }
-
-
-
-      day.tasks.forEach(
-        (task, taskIndex) => {
-
-          html += `
-
-            <div class="task">
-
-              <input
-                type="checkbox"
-
-                ${
-                  task.done
-                  ? "checked"
-                  : ""
-                }
-
-                onchange="
-                  toggleTask(
-                    ${dayIndex},
-                    ${taskIndex}
-                  )
-                "
-              >
-
-              <span
-                class="${
-                  task.done
-                  ? "done"
-                  : ""
-                }"
-              >
-
-                ${task.text}
-
-              </span>
-
-            </div>
-
-          `;
-
-        }
-
-      );
-
-
-      html += `</div>`;
-
-    }
-
-  );
-
-
-
-  planDiv.innerHTML = html;
-
-
-  updateProgress();
-
-}
-
-
-
-/* =========================
-   تغيير اليوم الحالي
-========================= */
-
-function changeCurrentDay() {
-
-  currentDay =
-    Number(
-      document.getElementById("currentDay").value
     );
 
-
-  saveCurrentDay();
-
-}
-
-
-
-/* =========================
-   تحديد المهمة كمكتملة
-========================= */
-
-function toggleTask(
-  dayIndex,
-  taskIndex
-) {
-
-  plan
-    .days[dayIndex]
-    .tasks[taskIndex]
-    .done =
-
-    !plan
-      .days[dayIndex]
-      .tasks[taskIndex]
-      .done;
-
-
-  savePlan();
-
-  renderPlan();
-
-}
-
-
-
-/* =========================
-   إعادة جدولة اليوم المتأخر
-========================= */
-
-function lateDay() {
-
-  if (!plan) {
-
-    showMessage(
-      "أنشئ خطة أولًا 💙"
-    );
-
-    return;
+    html += `
+      </div>
+    `;
   }
 
 
+  /* =========================
+     رسالة إكمال الخطة
+  ========================= */
 
-  /*
-    الحصول على اليوم المحدد
-  */
+  if (percent === 100) {
 
-  const dayIndex =
-    currentDay - 1;
+    html += `
+      <div
+        class="card"
+        style="margin-top:16px"
+      >
 
+        <h2>
+          🎉🎉 أحسنتِ!
+        </h2>
 
-  const today =
-    plan.days[dayIndex];
+        <p>
+          أكملتِ جميع دروس خطتك.
+          استمر بهذا الإنجاز! 💙
+        </p>
 
-
-
-  if (!today) {
-
-    showMessage(
-      "اختر يومًا صحيحًا 💙"
-    );
-
-    return;
+      </div>
+    `;
   }
 
 
-
-  /*
-    أخذ المهام غير المكتملة
-    من هذا اليوم فقط
-  */
-
-  const unfinished =
-    today.tasks.filter(
-      task => !task.done
-    );
-
-
-
-  if (unfinished.length === 0) {
-
-    showMessage(
-      "جميع مهام هذا اليوم مكتملة 🎉"
-    );
-
-    return;
-  }
-
-
-
-  /*
-    نحافظ على المهام المكتملة
-  */
-
-  today.tasks =
-    today.tasks.filter(
-      task => task.done
-    );
-
-
-
-  /*
-    نوزع المهام المتأخرة
-    على الأيام التالية فقط
-  */
-
-  let taskNumber = 0;
-
-
-
-  for (
-    let i = dayIndex + 1;
-
-    i < plan.days.length &&
-    taskNumber < unfinished.length;
-
-    i++
-  ) {
-
-    /*
-      نضيف المهمة المتأخرة
-      إلى بداية مهام اليوم التالي
-    */
-
-    plan.days[i].tasks.unshift({
-
-      text:
-        unfinished[taskNumber].text,
-
-      done: false
-
-    });
-
-
-    taskNumber++;
-
-  }
-
-
-
-  /*
-    إذا لم تعد هناك أيام كافية،
-    تضاف المهام إلى آخر يوم
-  */
-
-  while (
-    taskNumber < unfinished.length
-  ) {
-
-    plan.days[
-      plan.days.length - 1
-    ].tasks.push({
-
-      text:
-        unfinished[taskNumber].text,
-
-      done: false
-
-    });
-
-
-    taskNumber++;
-
-  }
-
-
-
-  savePlan();
-
-  renderPlan();
-
-
-
-  showMessage(
-
-    `تمت إعادة جدولة مهام اليوم ${currentDay}
-     فقط 🔄✨`
-
-  );
-
+  container.innerHTML = html;
 }
 
 
-
 /* =========================
-   حفظ الخطة
+   حماية النص
 ========================= */
 
-function savePlan() {
+function escapeHTML(text) {
 
-  localStorage.setItem(
+  const div =
+    document.createElement("div");
 
-    "wateeraPlan",
+  div.textContent = text;
 
-    JSON.stringify(plan)
-
-  );
-
+  return div.innerHTML;
 }
-
 
 
 /* =========================
-   حفظ اليوم الحالي
-========================= */
-
-function saveCurrentDay() {
-
-  localStorage.setItem(
-
-    "wateeraCurrentDay",
-
-    currentDay
-
-  );
-
-}
-
-
-
-/* =========================
-   حذف الخطة
-========================= */
-
-function clearPlan() {
-
-  const confirmed =
-    confirm(
-      "هل تريد حذف الخطة؟"
-    );
-
-
-  if (!confirmed) return;
-
-
-  plan = null;
-
-  currentDay = 1;
-
-
-  localStorage.removeItem(
-    "wateeraPlan"
-  );
-
-
-  localStorage.removeItem(
-    "wateeraCurrentDay"
-  );
-
-
-  renderPlan();
-
-
-  showMessage(
-    "تم حذف الخطة 🗑️"
-  );
-
-}
-
-
-
-/* =========================
-   نسبة الإنجاز
-========================= */
-
-function updateProgress() {
-
-  if (!plan) {
-
-    document
-      .getElementById("progress")
-      .style.width = "0%";
-
-
-    document
-      .getElementById("progressText")
-      .innerText = "0%";
-
-
-    return;
-  }
-
-
-
-  let total = 0;
-
-  let completed = 0;
-
-
-
-  plan.days.forEach(
-    day => {
-
-      day.tasks.forEach(
-        task => {
-
-          total++;
-
-
-          if (task.done) {
-
-            completed++;
-
-          }
-
-        }
-
-      );
-
-    }
-
-  );
-
-
-
-  const percent =
-    total === 0
-    ? 0
-    : Math.round(
-        (completed / total) * 100
-      );
-
-
-
-  document
-    .getElementById("progress")
-    .style.width =
-    percent + "%";
-
-
-  document
-    .getElementById("progressText")
-    .innerText =
-    percent + "%";
-
-}
-
-
-
-/* =========================
-   الرسائل
-========================= */
-
-function showMessage(text) {
-
-  document
-    .getElementById("message")
-    .innerHTML =
-
-    `<div class="message">
-      ${text}
-    </div>`;
-
-}
-
-
-
-/* =========================
-   المؤقت
-========================= */
-
-let timerSeconds =
-  25 * 60;
-
-let timerInterval =
-  null;
-
-
-
-function updateTimerDisplay() {
-
-  const minutes =
-    Math.floor(
-      timerSeconds / 60
-    );
-
-
-  const seconds =
-    timerSeconds % 60;
-
-
-  document
-    .getElementById("timer")
-    .innerText =
-
-    String(minutes)
-      .padStart(2, "0")
-
-    + ":" +
-
-    String(seconds)
-      .padStart(2, "0");
-
-}
-
-
-
-function startTimer() {
-
-  if (timerInterval) return;
-
-
-  timerInterval =
-    setInterval(
-
-      () => {
-
-        if (timerSeconds > 0) {
-
-          timerSeconds--;
-
-          updateTimerDisplay();
-
-        }
-
-        else {
-
-          clearInterval(
-            timerInterval
-          );
-
-          timerInterval = null;
-
-
-          alert(
-            "انتهى وقت المذاكرة! 🎉"
-          );
-
-        }
-
-      },
-
-      1000
-
-    );
-
-}
-
-
-
-function pauseTimer() {
-
-  clearInterval(
-    timerInterval
-  );
-
-  timerInterval = null;
-
-}
-
-
-
-function resetTimer() {
-
-  clearInterval(
-    timerInterval
-  );
-
-  timerInterval = null;
-
-
-  timerSeconds =
-    25 * 60;
-
-
-  updateTimerDisplay();
-
-}
-
-
-
-/* =========================
-   تشغيل الموقع
+   تشغيل التطبيق
 ========================= */
 
 renderPlan();
-
-updateTimerDisplay();
-
-</script>
-
-</body>
-</html>
